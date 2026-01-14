@@ -1,65 +1,466 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Header } from "@/app/components/layout/Header";
+import { StorySection } from "@/app/components/home/StorySection";
+import { ScrollProvider } from "@/app/context/ScrollContext";
+import { PHI_POSITIONS, BAUHAUS_COLORS } from "@/app/config/theme";
+import { contractAddress } from "@/app/config/contract";
+import { truncateAddress } from "@/app/lib/format";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      {/* Skip to content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-foreground focus:text-background focus:px-4 focus:py-2 focus:rounded"
+      >
+        Skip to content
+      </a>
+
+      <ScrollProvider>
+        <Header />
+
+        <main id="main-content">
+          {/* Section 1: Hero */}
+          <StorySection id="hero" className="bg-background relative">
+            <div className="text-center space-y-8">
+              <p className="text-sm uppercase tracking-[0.3em] text-foreground/60">
+                Invisible Law
+              </p>
+              <h1 className="font-serif text-5xl sm:text-7xl lg:text-8xl tracking-tight leading-none">
+                The Golden Ratio
+                <br />
+                <span className="text-foreground/70">Made Visible</span>
+              </h1>
+              <div className="flex justify-center gap-4 pt-8">
+                {BAUHAUS_COLORS.slice(0, 5).map((color, i) => (
+                  <div
+                    key={i}
+                    className="w-3 h-3 sm:w-4 sm:h-4"
+                    style={{ backgroundColor: color }}
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Scroll indicator */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+              <svg
+                className="w-6 h-6 text-foreground/50"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                />
+              </svg>
+              <span className="sr-only">Scroll down</span>
+            </div>
+          </StorySection>
+
+          {/* Section 2: The Question */}
+          <StorySection id="question" className="bg-background">
+            <div className="text-center space-y-8 max-w-3xl mx-auto">
+              <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl leading-tight">
+                Why do some compositions feel{" "}
+                <span className="italic">harmonious</span>
+                <br />
+                while others feel <span className="italic">chaotic</span>?
+              </h2>
+              <p className="text-lg sm:text-xl text-foreground/70">
+                Why does the Parthenon please the eye?
+                <br />
+                Why do sunflowers spiral in that particular way?
+              </p>
+            </div>
+          </StorySection>
+
+          {/* Section 3: The Answer - Phi */}
+          <StorySection id="phi" className="bg-background">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <p className="text-sm uppercase tracking-[0.2em] text-foreground/60">
+                  The Answer
+                </p>
+                <h2 className="font-serif text-7xl sm:text-9xl lg:text-10xl">
+                  <span style={{ color: BAUHAUS_COLORS[0] }}>P</span>
+                  <span style={{ color: BAUHAUS_COLORS[1] }}>h</span>
+                  <span style={{ color: BAUHAUS_COLORS[3] }}>i</span>
+                </h2>
+                <p className="font-mono text-xl sm:text-2xl text-foreground/80">
+                  1.618033988749...
+                </p>
+                <p className="text-base sm:text-lg text-foreground/70 leading-relaxed">
+                  A ratio discovered by mathematicians but obeyed by nature long
+                  before humans existed.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm text-foreground/70">
+                <div className="border border-foreground/10 p-6 space-y-2">
+                  <div
+                    className="w-8 h-8 rounded-full"
+                    style={{ backgroundColor: BAUHAUS_COLORS[3] }}
+                    aria-hidden="true"
+                  />
+                  <p>Nautilus shells</p>
+                </div>
+                <div className="border border-foreground/10 p-6 space-y-2">
+                  <div
+                    className="w-8 h-8"
+                    style={{ backgroundColor: BAUHAUS_COLORS[4] }}
+                    aria-hidden="true"
+                  />
+                  <p>Branching of trees</p>
+                </div>
+                <div className="border border-foreground/10 p-6 space-y-2">
+                  <div
+                    className="w-8 h-8 rounded-full"
+                    style={{ backgroundColor: BAUHAUS_COLORS[5] }}
+                    aria-hidden="true"
+                  />
+                  <p>Human proportions</p>
+                </div>
+                <div className="border border-foreground/10 p-6 space-y-2">
+                  <div
+                    className="w-8 h-8"
+                    style={{ backgroundColor: BAUHAUS_COLORS[6] }}
+                    aria-hidden="true"
+                  />
+                  <p>Structure of galaxies</p>
+                </div>
+              </div>
+            </div>
+          </StorySection>
+
+          {/* Section 4: The Phi Grid */}
+          <StorySection id="grid" className="bg-background">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+              {/* Title - Above grid on mobile, right side on desktop */}
+              <div className="order-1 lg:order-2 space-y-2 text-center lg:text-left lg:row-span-1">
+                <p className="text-sm uppercase tracking-[0.2em] text-foreground/60">
+                  The Foundation
+                </p>
+                <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl">
+                  9 &times; 9 Phi Grid
+                </h2>
+              </div>
+
+              {/* Visual Grid - Left side on desktop */}
+              <div
+                className="order-2 lg:order-1 lg:row-span-3 relative aspect-square w-full max-w-md mx-auto lg:mx-0 border border-foreground/20"
+                aria-hidden="true"
+              >
+                {PHI_POSITIONS.map((pos, i) => (
+                  <div key={`v-${i}`}>
+                    <div
+                      className="absolute top-0 bottom-0 w-px bg-foreground/20"
+                      style={{ left: `${pos}%` }}
+                    />
+                    <div
+                      className="absolute left-0 right-0 h-px bg-foreground/20"
+                      style={{ top: `${pos}%` }}
+                    />
+                  </div>
+                ))}
+                {/* Highlight intersections */}
+                {[38.2, 50, 61.8].map((x, xi) =>
+                  [38.2, 50, 61.8].map((y, yi) => (
+                    <div
+                      key={`dot-${xi}-${yi}`}
+                      className="absolute w-2 h-2 rounded-full -translate-x-1/2 -translate-y-1/2"
+                      style={{
+                        left: `${x}%`,
+                        top: `${y}%`,
+                        backgroundColor: BAUHAUS_COLORS[(xi + yi) % 7],
+                      }}
+                    />
+                  ))
+                )}
+              </div>
+
+              {/* Grid Positions - Below grid on mobile */}
+              <div className="order-3 lg:order-2 font-mono text-xs text-foreground/60 text-center lg:text-left">
+                <div className="flex justify-center lg:justify-start gap-1 flex-wrap">
+                  {PHI_POSITIONS.map((pos, i) => (
+                    <span
+                      key={i}
+                      className="px-1.5 py-0.5 bg-foreground/5"
+                      style={{
+                        borderBottom: `2px solid ${BAUHAUS_COLORS[i % 7]}`,
+                      }}
+                    >
+                      {pos}%
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Description - Below badges on mobile */}
+              <div className="order-4 lg:order-2 text-center lg:text-left">
+                <p className="text-sm sm:text-base text-foreground/70">
+                  Phi and its powers&mdash;proportions used by Renaissance
+                  masters and modern architects alike.
+                </p>
+              </div>
+            </div>
+          </StorySection>
+
+          {/* Section 5: Visual Language */}
+          <StorySection id="visual" className="bg-background">
+            <div className="text-center space-y-6 sm:space-y-8">
+              <div className="space-y-2 sm:space-y-4">
+                <p className="text-sm uppercase tracking-[0.2em] text-foreground/60">
+                  Visual Language
+                </p>
+                <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl">
+                  Bauhaus Mosaic
+                </h2>
+                <p className="text-sm sm:text-lg text-foreground/70">
+                  Geometric abstraction in the tradition of Kandinsky and
+                  Mondrian
+                </p>
+              </div>
+
+              {/* Layers */}
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 text-left">
+                {[
+                  { name: "Phi Grid", desc: "9×9 structural lines", color: 0 },
+                  {
+                    name: "Boundary Circle",
+                    desc: "Central focus at radius 360",
+                    color: 3,
+                  },
+                  {
+                    name: "Mosaic Rectangles",
+                    desc: "Colored tiles that breathe",
+                    color: 1,
+                  },
+                  {
+                    name: "Intersection Dots",
+                    desc: "Fibonacci-sized markers",
+                    color: 5,
+                  },
+                  {
+                    name: "Concentric Rings",
+                    desc: "Secondary focal points",
+                    color: 4,
+                  },
+                  {
+                    name: "Extended Lines",
+                    desc: "Connections to edges",
+                    color: 6,
+                  },
+                ].map((layer, i) => (
+                  <div
+                    key={i}
+                    className="border border-foreground/10 p-3 sm:p-4 space-y-1"
+                  >
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div
+                        className="w-3 h-3"
+                        style={{ backgroundColor: BAUHAUS_COLORS[layer.color] }}
+                        aria-hidden="true"
+                      />
+                      <span className="font-medium text-sm sm:text-base">{layer.name}</span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-foreground/60">{layer.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </StorySection>
+
+          {/* Section 6: Rarity */}
+          <StorySection id="rarity" className="bg-background">
+            <div className="text-center space-y-6 sm:space-y-8">
+              <div className="space-y-2 sm:space-y-4">
+                <p className="text-sm uppercase tracking-[0.2em] text-foreground/60">
+                  Rarity & Meaning
+                </p>
+                <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl">
+                  Not Random. Intentional.
+                </h2>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
+                <div className="border-l-4 border-foreground/80 pl-6 py-4 space-y-2">
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-serif text-xl">Legendary</span>
+                    <span className="font-mono text-sm text-foreground/60">
+                      2%
+                    </span>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Spiral, Unity, Zero &mdash; transcendent states
+                  </p>
+                </div>
+
+                <div
+                  className="border-l-4 pl-6 py-4 space-y-2"
+                  style={{ borderColor: BAUHAUS_COLORS[0] }}
+                >
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-serif text-xl">Rare</span>
+                    <span className="font-mono text-sm text-foreground/60">
+                      8%
+                    </span>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Sequence, Infinite, Ratio &mdash; mathematical concepts
+                  </p>
+                </div>
+
+                <div
+                  className="border-l-4 pl-6 py-4 space-y-2"
+                  style={{ borderColor: BAUHAUS_COLORS[1] }}
+                >
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-serif text-xl">Uncommon</span>
+                    <span className="font-mono text-sm text-foreground/60">
+                      20%
+                    </span>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Enhanced &mdash; elevated density
+                  </p>
+                </div>
+
+                <div
+                  className="border-l-4 pl-6 py-4 space-y-2"
+                  style={{ borderColor: BAUHAUS_COLORS[3] }}
+                >
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-serif text-xl">Standard</span>
+                    <span className="font-mono text-sm text-foreground/60">
+                      70%
+                    </span>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Standard &mdash; balanced harmony
+                  </p>
+                </div>
+              </div>
+            </div>
+          </StorySection>
+
+          {/* Section 7: On-Chain Forever */}
+          <StorySection id="onchain" className="bg-background">
+            <div className="text-center space-y-4 sm:space-y-6 max-w-2xl mx-auto">
+              <p className="text-sm uppercase tracking-[0.2em] text-foreground/60">
+                On-Chain Forever
+              </p>
+              <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl leading-tight">
+                No IPFS. No servers.
+                <br />
+                No dependencies.
+              </h2>
+              <p className="text-base sm:text-lg text-foreground/70 leading-relaxed">
+                Each artwork exists entirely onchain. As long as the blockchain
+                exists, your art exists&mdash;governed by the same invisible law
+                that shapes the universe.
+              </p>
+              <p className="font-serif text-xl sm:text-2xl text-foreground/80 pt-2">
+                Your seed. Your art. Forever.
+              </p>
+            </div>
+          </StorySection>
+
+          {/* Section 8: CTA */}
+          <StorySection id="mint" className="bg-background">
+            <div className="text-center space-y-8 sm:space-y-12">
+              <div className="space-y-2 sm:space-y-4">
+                <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl">618 Pieces</h2>
+                <p className="font-mono text-base sm:text-lg text-foreground/60">
+                  1.<span style={{ color: BAUHAUS_COLORS[0] }}>618</span>...
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto font-mono text-sm text-foreground/70">
+                <div className="text-center">
+                  <div className="text-2xl text-foreground">618</div>
+                  <div>Supply</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl text-foreground">5</div>
+                  <div>Max/wallet</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl text-foreground">Base</div>
+                  <div>Chain</div>
+                </div>
+              </div>
+
+              <Link
+                href="/mint"
+                className="inline-flex items-center justify-center px-8 py-4 bg-foreground text-background font-serif text-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground"
+              >
+                Mint Now
+              </Link>
+
+              <div
+                className="flex justify-center gap-3 pt-8"
+                aria-hidden="true"
+              >
+                {BAUHAUS_COLORS.map((color, i) => (
+                  <div
+                    key={i}
+                    className="w-4 h-4"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+          </StorySection>
+        </main>
+
+          {/* Section 9: Footer */}
+          <StorySection id="footer" className="bg-background">
+            <footer className="w-full">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-foreground/50">
+                {/* Contract Link */}
+                <a
+                  href={`https://basescan.org/address/${contractAddress}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors font-mono text-xs"
+                >
+                  Contract: {truncateAddress(contractAddress, 6)}
+                </a>
+
+                {/* Copyright */}
+                <p className="font-serif">
+                  Invisible Law &copy; {new Date().getFullYear()}
+                </p>
+
+                {/* Links */}
+                <div className="flex items-center gap-4">
+                  <a
+                    href="https://opensea.io/collection/invisible-law"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    OpenSea
+                  </a>
+                  <a
+                    href="https://x.com/invisiblelaw"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    X
+                  </a>
+                </div>
+              </div>
+            </footer>
+          </StorySection>
+      </ScrollProvider>
+    </>
   );
 }
