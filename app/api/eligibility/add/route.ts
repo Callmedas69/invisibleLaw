@@ -76,9 +76,15 @@ export async function POST(
   // Send notification if successfully added (not already allowlisted)
   if (result.success && !result.alreadyAllowlisted && result.fid) {
     // Fire and forget - don't block response on notification
-    sendAllowlistNotification(result.fid).catch((error) => {
-      console.error("[AddRoute] Failed to send notification:", error);
-    });
+    sendAllowlistNotification(result.fid)
+      .then((notifResult) => {
+        if (notifResult.rateLimited) {
+          console.warn(`[AddRoute] Notification rate limited for FID ${result.fid}`);
+        }
+      })
+      .catch((error) => {
+        console.error("[AddRoute] Failed to send notification:", error);
+      });
   }
 
   // Return appropriate status code based on result

@@ -40,7 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.docs/*
+
 .mcp.json
-CLAUDE.md
 Narrative.md
+# .docs/*
+# CLAUDE.md
