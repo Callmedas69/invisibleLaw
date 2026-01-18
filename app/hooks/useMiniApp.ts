@@ -30,8 +30,8 @@ export function useMiniApp() {
     /** User's Farcaster profile image (null in web mode or if not available) */
     pfpUrl: context.context?.user?.pfpUrl ?? null,
 
-    /** Full frame context */
-    frameContext: context.context,
+    /** Full context */
+    miniAppContext: context.context,
 
     /** Open URL (uses Farcaster browser in miniapp, new tab in web) */
     openUrl: context.openUrl,

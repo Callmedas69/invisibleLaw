@@ -14,7 +14,7 @@ import { FARCASTER_CONFIG } from "@/app/config/farcaster";
 export async function GET() {
   const { metadata, urls, splash, accountAssociation } = FARCASTER_CONFIG;
 
-  // Build the manifest
+  // Build the manifest per Farcaster spec
   const manifest = {
     accountAssociation: {
       header: accountAssociation.header,
@@ -22,6 +22,7 @@ export async function GET() {
       signature: accountAssociation.signature,
     },
     miniapp: {
+      version: "1", // Required field per Farcaster spec
       name: metadata.name,
       subtitle: metadata.subtitle,
       description: metadata.description,

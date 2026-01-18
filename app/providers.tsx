@@ -6,7 +6,7 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { webConfig, miniappConfig } from './config/wagmi';
 import { MiniAppProvider } from './context/MiniAppContext';
-import sdk from '@farcaster/miniapp-sdk';
+import { sdk } from '@farcaster/miniapp-sdk';
 import '@rainbow-me/rainbowkit/styles.css';
 
 const queryClient = new QueryClient();

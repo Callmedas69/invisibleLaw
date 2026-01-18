@@ -8,7 +8,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import sdk, { type Context } from "@farcaster/miniapp-sdk";
+import { sdk } from "@farcaster/miniapp-sdk";
 
 /**
  * MiniApp Context
@@ -17,13 +17,26 @@ import sdk, { type Context } from "@farcaster/miniapp-sdk";
  * Handles detection of miniapp environment and SDK initialization.
  */
 
+/** User context from Farcaster SDK */
+interface FarcasterUser {
+  fid: number;
+  username?: string;
+  displayName?: string;
+  pfpUrl?: string;
+}
+
+/** Miniapp context from SDK */
+interface MiniAppContextData {
+  user: FarcasterUser;
+}
+
 interface MiniAppContextValue {
   /** Whether the app is running inside Farcaster (Warpcast) */
   isMiniApp: boolean;
   /** Whether the SDK has been initialized and ready() called */
   isReady: boolean;
-  /** Farcaster frame context (FID, username, etc.) */
-  context: Context.FrameContext | null;
+  /** Farcaster context (user info, etc.) */
+  context: MiniAppContextData | null;
   /** Open a URL using Farcaster's external browser */
   openUrl: (url: string) => void;
   /** Close the miniapp */
@@ -47,7 +60,7 @@ const MiniAppContext = createContext<MiniAppContextValue>({
 export function MiniAppProvider({ children }: { children: ReactNode }) {
   const [isMiniApp, setIsMiniApp] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [context, setContext] = useState<Context.FrameContext | null>(null);
+  const [context, setContext] = useState<MiniAppContextData | null>(null);
 
   // Initialize SDK and detect miniapp environment
   useEffect(() => {
@@ -58,9 +71,11 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
         setIsMiniApp(inMiniApp);
 
         if (inMiniApp) {
-          // Get the frame context (FID, username, etc.)
-          const frameContext = await sdk.context;
-          setContext(frameContext);
+          // Get the context (user info, etc.)
+          const miniAppContext = await sdk.context;
+          if (miniAppContext) {
+            setContext(miniAppContext as MiniAppContextData);
+          }
 
           // Signal to Farcaster that the app is ready
           sdk.actions.ready();
