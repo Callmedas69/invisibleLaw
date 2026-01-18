@@ -56,10 +56,10 @@ export function ScrollSnapController() {
       tolerance: 10,
       preventDefault: true,
       onUp: () => {
-        goToSection(currentIndex - 1);
+        goToSection(currentIndex + 1);
       },
       onDown: () => {
-        goToSection(currentIndex + 1);
+        goToSection(currentIndex - 1);
       },
     });
 

@@ -125,6 +125,76 @@ export async function fetchNeynarUserByAddress(
  * @param targetFid - FID of the target user (the one being followed)
  * @returns Follow status or null on error
  */
+/**
+ * Fetches Farcaster user data by FID.
+ *
+ * Used when we already have the FID (e.g., from miniapp context)
+ * to skip the address lookup.
+ *
+ * @param fid - Farcaster user ID
+ * @returns User data or null if not found
+ */
+export async function fetchNeynarUserByFid(
+  fid: number
+): Promise<NeynarUserResult | null> {
+  try {
+    const response = await fetch(
+      `${NEYNAR_API_BASE}/user/bulk?fids=${fid}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          api_key: getNeynarApiKey(),
+        },
+        // Cache for 5 minutes
+        next: { revalidate: 300 },
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        `[NeynarRepository] API error: ${response.status} ${response.statusText}`
+      );
+      return null;
+    }
+
+    const data = await response.json();
+
+    // Response format: { users: [user1, ...] }
+    const users: NeynarApiUser[] = data.users;
+
+    if (!users || users.length === 0) {
+      return null;
+    }
+
+    const user = users[0];
+
+    // Get score from either location (prefer score over experimental)
+    const score = user.score ?? user.experimental?.neynar_user_score ?? null;
+
+    return {
+      fid: user.fid,
+      username: user.username,
+      displayName: user.display_name,
+      pfpUrl: user.pfp_url,
+      score,
+      verifiedAddresses: user.verified_addresses?.eth_addresses ?? [],
+    };
+  } catch (error) {
+    console.error("[NeynarRepository] Failed to fetch user by FID:", error);
+    return null;
+  }
+}
+
+/**
+ * Checks if a user (viewerFid) follows a target user (targetFid).
+ *
+ * Uses the bulk user endpoint with viewer_fid to get viewer_context.
+ *
+ * @param viewerFid - FID of the user to check (the potential follower)
+ * @param targetFid - FID of the target user (the one being followed)
+ * @returns Follow status or null on error
+ */
 export async function checkNeynarFollowStatus(
   viewerFid: number,
   targetFid: number

@@ -27,7 +27,9 @@
       "Bash(ls:*)",
       "Bash(npm list:*)",
       "Bash(npm ls:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(npm search:*)",
+      "Bash(npm info:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

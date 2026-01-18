@@ -10,10 +10,15 @@ interface ErrorResponse {
 }
 
 /**
- * GET /api/eligibility/check?address=0x...&xFollowConfirmed=true
+ * GET /api/eligibility/check?address=0x...&xFollowConfirmed=true&fid=12345
  *
  * Checks eligibility for a wallet address.
  * Transport layer only - validates input and calls business logic.
+ *
+ * Query parameters:
+ * - address: Ethereum wallet address (required)
+ * - xFollowConfirmed: User's self-declaration of X follow (optional, default false)
+ * - fid: Farcaster user ID from miniapp context (optional, speeds up lookup)
  */
 export async function GET(
   request: NextRequest
@@ -21,6 +26,8 @@ export async function GET(
   const searchParams = request.nextUrl.searchParams;
   const address = searchParams.get("address");
   const xFollowConfirmed = searchParams.get("xFollowConfirmed") === "true";
+  const fidParam = searchParams.get("fid");
+  const fid = fidParam ? parseInt(fidParam, 10) : undefined;
 
   // Input validation
   if (!address) {
@@ -37,8 +44,19 @@ export async function GET(
     );
   }
 
-  // Call business logic
-  const result = await checkEligibility(address, xFollowConfirmed);
+  // Validate fid if provided
+  if (fidParam && (isNaN(fid!) || fid! <= 0)) {
+    return NextResponse.json(
+      { error: "Invalid fid parameter" },
+      { status: 400 }
+    );
+  }
+
+  // Call business logic with options
+  const result = await checkEligibility(address, {
+    xFollowConfirmed,
+    fid,
+  });
 
   return NextResponse.json(result);
 }

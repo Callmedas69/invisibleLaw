@@ -388,32 +388,18 @@ export default function Home() {
             {/* Geometric decoration - flipped */}
             <GeometricArrows id="cta" flipVertical />
 
-            <div className="relative z-10 text-center space-y-8 sm:space-y-12">
-              <div className="space-y-2 sm:space-y-4">
-                <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl">1272 Pieces</h2>
-                <p className="font-mono text-base sm:text-lg text-foreground/60">
-                  1.<span style={{ color: BAUHAUS_COLORS[0] }}>618</span>... × 2
-                </p>
+            <div className="relative z-10 text-center space-y-6 sm:space-y-12">
+              <div className="flex items-center justify-center gap-1 sm:gap-2">
+                <img
+                  src="/sqrt-pi.png"
+                  alt="√π"
+                  className="h-20 sm:h-16 md:h-24 lg:h-32 w-auto"
+                />
+                <h2 className="font-serif text-5xl sm:text-5xl md:text-6xl lg:text-7xl">= 1,272</h2>
               </div>
-
-              <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto font-mono text-sm text-foreground/70">
-                <div className="text-center">
-                  <div className="text-2xl text-foreground">1272</div>
-                  <div>Supply</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl text-foreground">5</div>
-                  <div>Max/wallet</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl text-foreground">Base</div>
-                  <div>Chain</div>
-                </div>
-              </div>
-
               <Link
                 href="/mint"
-                className="inline-flex items-center justify-center px-8 py-4 bg-foreground text-background font-serif text-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground"
+                className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-foreground text-background font-serif text-sm sm:text-base hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground"
               >
                 Mint Now
               </Link>

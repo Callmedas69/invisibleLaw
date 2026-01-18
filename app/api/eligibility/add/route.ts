@@ -4,6 +4,7 @@ import {
   addToAllowlistIfEligible,
   AddToAllowlistResult,
 } from "@/app/lib/eligibility/eligibility-service";
+import { sendAllowlistNotification } from "@/app/lib/notifications/notification-service";
 
 interface ErrorResponse {
   error: string;
@@ -12,6 +13,7 @@ interface ErrorResponse {
 interface AddRequest {
   address: string;
   xFollowConfirmed: boolean;
+  fid?: number;
 }
 
 /**
@@ -23,7 +25,8 @@ interface AddRequest {
  * Request body:
  * {
  *   "address": "0x...",
- *   "xFollowConfirmed": true
+ *   "xFollowConfirmed": true,
+ *   "fid": 12345 // optional, from miniapp context
  * }
  */
 export async function POST(
@@ -40,7 +43,7 @@ export async function POST(
     );
   }
 
-  const { address, xFollowConfirmed } = body;
+  const { address, xFollowConfirmed, fid } = body;
 
   // Input validation
   if (!address) {
@@ -64,8 +67,19 @@ export async function POST(
     );
   }
 
-  // Call business logic
-  const result = await addToAllowlistIfEligible(address, xFollowConfirmed);
+  // Call business logic with optional fid
+  const result = await addToAllowlistIfEligible(address, {
+    xFollowConfirmed,
+    fid,
+  });
+
+  // Send notification if successfully added (not already allowlisted)
+  if (result.success && !result.alreadyAllowlisted && result.fid) {
+    // Fire and forget - don't block response on notification
+    sendAllowlistNotification(result.fid).catch((error) => {
+      console.error("[AddRoute] Failed to send notification:", error);
+    });
+  }
 
   // Return appropriate status code based on result
   if (!result.success && !result.alreadyAllowlisted) {

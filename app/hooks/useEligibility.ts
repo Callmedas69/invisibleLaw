@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAccount } from "wagmi";
+import { useMiniApp } from "@/app/hooks/useMiniApp";
 import type {
   EligibilityResult,
   ScoreCheckResult,
@@ -44,6 +45,7 @@ export interface UseEligibilityData {
 
 export function useEligibility(): UseEligibilityData {
   const { address, isConnected } = useAccount();
+  const { fid } = useMiniApp();
 
   const [eligibility, setEligibility] = useState<EligibilityResult | null>(
     null
@@ -64,9 +66,18 @@ export function useEligibility(): UseEligibilityData {
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/eligibility/check?address=${address}&xFollowConfirmed=${xFollowConfirmed}`
-      );
+      // Build query params
+      const params = new URLSearchParams({
+        address,
+        xFollowConfirmed: String(xFollowConfirmed),
+      });
+
+      // Include FID if available from miniapp context
+      if (fid) {
+        params.append("fid", String(fid));
+      }
+
+      const response = await fetch(`/api/eligibility/check?${params}`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -81,7 +92,7 @@ export function useEligibility(): UseEligibilityData {
     } finally {
       setIsLoading(false);
     }
-  }, [address, isConnected, xFollowConfirmed]);
+  }, [address, isConnected, xFollowConfirmed, fid]);
 
   // Fetch on mount and when dependencies change
   useEffect(() => {
@@ -111,6 +122,7 @@ export function useEligibility(): UseEligibilityData {
         body: JSON.stringify({
           address,
           xFollowConfirmed,
+          fid, // Include FID if available from miniapp context
         }),
       });
 
@@ -133,7 +145,7 @@ export function useEligibility(): UseEligibilityData {
     } finally {
       setIsAdding(false);
     }
-  }, [address, isConnected, eligibility?.isEligible, xFollowConfirmed, fetchEligibility]);
+  }, [address, isConnected, eligibility?.isEligible, xFollowConfirmed, fid, fetchEligibility]);
 
   // Derived values from eligibility result
   const scores = eligibility?.scores ?? [];

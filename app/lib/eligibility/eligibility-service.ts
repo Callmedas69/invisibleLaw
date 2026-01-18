@@ -14,6 +14,7 @@ import { ELIGIBILITY_CONFIG } from "@/app/config/eligibility";
 import { fetchEthosScore } from "@/app/lib/repositories/ethos-repository";
 import {
   fetchNeynarUserByAddress,
+  fetchNeynarUserByFid,
   checkNeynarFollowStatus,
 } from "@/app/lib/repositories/neynar-repository";
 import { fetchQuotientEligibility } from "@/app/lib/repositories/quotient-repository";
@@ -117,6 +118,14 @@ function evaluateQuotientScore(score: number | null): boolean {
 // Main Service Functions
 // ============================================================================
 
+/** Options for eligibility check */
+export interface CheckEligibilityOptions {
+  /** User's self-declaration of X follow (no API verification) */
+  xFollowConfirmed?: boolean;
+  /** Optional FID from miniapp context (skips address lookup) */
+  fid?: number;
+}
+
 /**
  * Checks eligibility for a wallet address.
  *
@@ -126,13 +135,18 @@ function evaluateQuotientScore(score: number | null): boolean {
  * 3. Overall eligibility: Score requirement AND Social requirement must both pass
  *
  * @param address - Ethereum wallet address
- * @param xFollowConfirmed - User's self-declaration of X follow (no API verification)
+ * @param options - Optional parameters including xFollowConfirmed and fid
  * @returns Complete eligibility result
  */
 export async function checkEligibility(
   address: string,
-  xFollowConfirmed: boolean = false
+  options: CheckEligibilityOptions | boolean = {}
 ): Promise<EligibilityResult> {
+  // Support legacy boolean signature for backwards compatibility
+  const opts: CheckEligibilityOptions =
+    typeof options === "boolean" ? { xFollowConfirmed: options } : options;
+  const { xFollowConfirmed = false, fid } = opts;
+
   const normalizedAddress = address.toLowerCase();
 
   // Check if already allowlisted
@@ -157,9 +171,11 @@ export async function checkEligibility(
   });
 
   // -------------------------------------------------------------------------
-  // Step 2: Fetch Neynar user by address (to get FID for other checks)
+  // Step 2: Fetch Neynar user (by FID if provided, otherwise by address)
   // -------------------------------------------------------------------------
-  const neynarUser = await fetchNeynarUserByAddress(normalizedAddress);
+  const neynarUser = fid
+    ? await fetchNeynarUserByFid(fid)
+    : await fetchNeynarUserByAddress(normalizedAddress);
 
   if (neynarUser) {
     farcasterUser = {
@@ -289,19 +305,32 @@ export async function checkEligibility(
   };
 }
 
+/** Options for adding to allowlist */
+export interface AddToAllowlistOptions {
+  /** User's self-declaration of X follow */
+  xFollowConfirmed: boolean;
+  /** Optional FID from miniapp context */
+  fid?: number;
+}
+
 /**
  * Adds an address to the allowlist if eligible.
  *
  * Server-side re-validation is performed before adding.
  *
  * @param address - Ethereum wallet address
- * @param xFollowConfirmed - User's self-declaration of X follow
- * @returns Result of the add operation
+ * @param options - Options including xFollowConfirmed and optional fid
+ * @returns Result of the add operation including fid if available
  */
 export async function addToAllowlistIfEligible(
   address: string,
-  xFollowConfirmed: boolean
-): Promise<AddToAllowlistResult> {
+  options: AddToAllowlistOptions | boolean
+): Promise<AddToAllowlistResult & { fid?: number }> {
+  // Support legacy boolean signature for backwards compatibility
+  const opts: AddToAllowlistOptions =
+    typeof options === "boolean" ? { xFollowConfirmed: options } : options;
+  const { xFollowConfirmed, fid } = opts;
+
   const normalizedAddress = address.toLowerCase();
 
   // Check if already allowlisted
@@ -310,17 +339,25 @@ export async function addToAllowlistIfEligible(
       success: true,
       error: null,
       alreadyAllowlisted: true,
+      fid,
     };
   }
 
   // Re-validate eligibility server-side
-  const eligibility = await checkEligibility(normalizedAddress, xFollowConfirmed);
+  const eligibility = await checkEligibility(normalizedAddress, {
+    xFollowConfirmed,
+    fid,
+  });
+
+  // Get FID from eligibility result (more reliable than passed fid)
+  const resolvedFid = eligibility.farcasterUser?.fid ?? fid;
 
   if (!eligibility.isEligible) {
     return {
       success: false,
       error: "Address does not meet eligibility requirements",
       alreadyAllowlisted: false,
+      fid: resolvedFid,
     };
   }
 
@@ -331,6 +368,7 @@ export async function addToAllowlistIfEligible(
       success: true,
       error: null,
       alreadyAllowlisted: false,
+      fid: resolvedFid,
     };
   } catch (error) {
     console.error("[EligibilityService] Failed to add to allowlist:", error);
@@ -338,6 +376,7 @@ export async function addToAllowlistIfEligible(
       success: false,
       error: "Failed to add address to allowlist",
       alreadyAllowlisted: false,
+      fid: resolvedFid,
     };
   }
 }

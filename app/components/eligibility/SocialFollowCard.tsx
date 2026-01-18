@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface SocialFollowCardProps {
   platform: "x" | "farcaster";
   username: string;
@@ -51,6 +53,7 @@ export function SocialFollowCard({
   isLoading = false,
   onConfirmFollow,
 }: SocialFollowCardProps) {
+  const [hasClickedFollow, setHasClickedFollow] = useState(false);
   const info = PLATFORM_INFO[platform];
   const isX = platform === "x";
 
@@ -91,6 +94,7 @@ export function SocialFollowCard({
             href={profileUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => setHasClickedFollow(true)}
             className="px-3 py-2 text-sm text-center min-h-[40px] flex items-center justify-center border border-foreground/20 hover:bg-foreground/5 transition-colors"
           >
             Follow
@@ -100,7 +104,12 @@ export function SocialFollowCard({
           {isX && onConfirmFollow && (
             <button
               onClick={onConfirmFollow}
-              className="px-3 py-2 text-sm text-center min-h-[40px] flex items-center justify-center border border-foreground/20 hover:bg-foreground/5 transition-colors"
+              disabled={!hasClickedFollow}
+              className={`px-3 py-2 text-sm text-center min-h-[40px] flex items-center justify-center border border-foreground/20 transition-colors ${
+                hasClickedFollow
+                  ? "hover:bg-foreground/5"
+                  : "opacity-50 cursor-not-allowed"
+              }`}
             >
               I Followed
             </button>
