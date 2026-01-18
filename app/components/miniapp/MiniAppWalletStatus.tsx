@@ -43,15 +43,17 @@ export function MiniAppWalletStatus() {
       {/* Base chain icon */}
       <div
         className="flex items-center justify-center w-5 h-5 rounded-full"
-        style={{ backgroundColor: base.iconBackground }}
+        style={{ backgroundColor: "#0052FF" }}
       >
-        {base.iconUrl && (
-          <img
-            src={typeof base.iconUrl === "string" ? base.iconUrl : undefined}
-            alt="Base"
-            className="w-3 h-3"
-          />
-        )}
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="12" cy="12" r="10" fill="white" />
+        </svg>
       </div>
 
       {/* Profile image or placeholder */}
