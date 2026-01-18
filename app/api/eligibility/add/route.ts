@@ -4,7 +4,6 @@ import {
   addToAllowlistIfEligible,
   AddToAllowlistResult,
 } from "@/app/lib/eligibility/eligibility-service";
-import { sendAllowlistNotification } from "@/app/lib/notifications/notification-service";
 
 interface ErrorResponse {
   error: string;
@@ -72,20 +71,6 @@ export async function POST(
     xFollowConfirmed,
     fid,
   });
-
-  // Send notification if successfully added (not already allowlisted)
-  if (result.success && !result.alreadyAllowlisted && result.fid) {
-    // Fire and forget - don't block response on notification
-    sendAllowlistNotification(result.fid)
-      .then((notifResult) => {
-        if (notifResult.rateLimited) {
-          console.warn(`[AddRoute] Notification rate limited for FID ${result.fid}`);
-        }
-      })
-      .catch((error) => {
-        console.error("[AddRoute] Failed to send notification:", error);
-      });
-  }
 
   // Return appropriate status code based on result
   if (!result.success && !result.alreadyAllowlisted) {

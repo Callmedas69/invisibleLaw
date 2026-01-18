@@ -41,8 +41,5 @@ export function useMiniApp() {
 
     /** Prompt to add miniapp to home screen (no-op in web mode) */
     addMiniApp: context.addMiniApp,
-
-    /** Request notification permissions */
-    requestNotifications: context.requestNotifications,
   };
 }

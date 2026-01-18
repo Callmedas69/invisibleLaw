@@ -43,8 +43,6 @@ interface MiniAppContextValue {
   close: () => void;
   /** Prompt user to add this miniapp to their home screen */
   addMiniApp: () => void;
-  /** Request notification permissions */
-  requestNotifications: () => Promise<boolean>;
 }
 
 const MiniAppContext = createContext<MiniAppContextValue>({
@@ -54,7 +52,6 @@ const MiniAppContext = createContext<MiniAppContextValue>({
   openUrl: () => {},
   close: () => {},
   addMiniApp: () => {},
-  requestNotifications: async () => false,
 });
 
 export function MiniAppProvider({ children }: { children: ReactNode }) {
@@ -117,19 +114,6 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
     }
   }, [isMiniApp]);
 
-  // Request notification permissions
-  const requestNotifications = useCallback(async (): Promise<boolean> => {
-    if (!isMiniApp) return false;
-
-    try {
-      const result = await sdk.actions.requestNotificationPermission();
-      return result.state === "granted";
-    } catch (error) {
-      console.error("[MiniAppContext] Failed to request notifications:", error);
-      return false;
-    }
-  }, [isMiniApp]);
-
   return (
     <MiniAppContext.Provider
       value={{
@@ -139,7 +123,6 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
         openUrl,
         close,
         addMiniApp,
-        requestNotifications,
       }}
     >
       {children}
