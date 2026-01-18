@@ -8,7 +8,14 @@ export function ProgressBar({ current, total, className = "" }: ProgressBarProps
   const percentage = total > 0 ? Math.min((current / total) * 100, 100) : 0;
 
   return (
-    <div className={`w-full ${className}`}>
+    <div
+      role="progressbar"
+      aria-valuenow={current}
+      aria-valuemin={0}
+      aria-valuemax={total}
+      aria-label={`${current} of ${total} minted`}
+      className={`w-full ${className}`}
+    >
       {/* Bar container */}
       <div className="h-2 bg-foreground/10 overflow-hidden">
         {/* Fill */}

@@ -39,8 +39,8 @@ export function CustomConnectButton() {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="px-4 py-2 text-sm font-medium bg-foreground text-background
-                      hover:bg-foreground/90 active:scale-[0.98] transition-all"
+                    className="px-4 py-2 min-h-[44px] text-sm font-medium bg-foreground text-background
+                      hover:bg-foreground/90 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 transition-all"
                   >
                     Connect
                   </button>
@@ -53,8 +53,8 @@ export function CustomConnectButton() {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="px-4 py-2 text-sm font-medium bg-red-600 text-white
-                      hover:bg-red-700 active:scale-[0.98] transition-all"
+                    className="px-4 py-2 min-h-[44px] text-sm font-medium bg-red-600 text-white
+                      hover:bg-red-700 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-red-600 transition-all"
                   >
                     Wrong Network
                   </button>
@@ -68,8 +68,8 @@ export function CustomConnectButton() {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="flex items-center justify-center w-9 h-9
-                      bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                    className="flex items-center justify-center w-11 h-11
+                      bg-foreground/5 hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 transition-colors"
                     aria-label={`Connected to ${chain.name}`}
                   >
                     {chain.hasIcon && chain.iconUrl ? (
@@ -87,8 +87,8 @@ export function CustomConnectButton() {
                   <button
                     onClick={openAccountModal}
                     type="button"
-                    className="flex items-center gap-2 px-3 py-2 text-sm
-                      bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm
+                      bg-foreground/5 hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 transition-colors"
                   >
                     {/* Avatar - always visible */}
                     {account.ensAvatar ? (

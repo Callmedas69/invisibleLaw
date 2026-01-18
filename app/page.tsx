@@ -1,29 +1,26 @@
 import Link from "next/link";
-import { Header } from "@/app/components/layout/Header";
+import { Footer } from "@/app/components/layout/Footer";
+import { DrawerNav } from "@/app/components/layout/DrawerNav";
 import { StorySection } from "@/app/components/home/StorySection";
+import { ScrollSnapController } from "@/app/components/home/ScrollSnapController";
 import { ScrollProvider } from "@/app/context/ScrollContext";
+import { GeometricArrows } from "@/app/components/ui/GeometricArrows";
 import { PHI_POSITIONS, BAUHAUS_COLORS } from "@/app/config/theme";
-import { contractAddress } from "@/app/config/contract";
-import { truncateAddress } from "@/app/lib/format";
 
 export default function Home() {
   return (
     <>
-      {/* Skip to content link for accessibility */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:bg-foreground focus:text-background focus:px-4 focus:py-2 focus:rounded"
-      >
-        Skip to content
-      </a>
-
+      <DrawerNav />
       <ScrollProvider>
-        <Header />
+        <ScrollSnapController />
 
         <main id="main-content">
           {/* Section 1: Hero */}
-          <StorySection id="hero" className="bg-background relative">
-            <div className="text-center space-y-8">
+          <StorySection id="hero" className="bg-background relative overflow-hidden">
+            {/* Geometric decoration */}
+            <GeometricArrows id="hero" />
+
+            <div className="relative z-10 text-center space-y-8">
               <p className="text-sm uppercase tracking-[0.3em] text-foreground/60">
                 Invisible Law
               </p>
@@ -281,23 +278,23 @@ export default function Home() {
             <div className="text-center space-y-6 sm:space-y-8">
               <div className="space-y-2 sm:space-y-4">
                 <p className="text-sm uppercase tracking-[0.2em] text-foreground/60">
-                  Rarity & Meaning
+                  Rarity Tiers
                 </p>
                 <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl">
                   Not Random. Intentional.
                 </h2>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
                 <div className="border-l-4 border-foreground/80 pl-6 py-4 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="font-serif text-xl">Legendary</span>
+                    <span className="font-serif text-xl">Chaos</span>
                     <span className="font-mono text-sm text-foreground/60">
                       2%
                     </span>
                   </div>
                   <p className="text-sm text-foreground/70">
-                    Spiral, Unity, Zero &mdash; transcendent states
+                    Highest density, maximum elements &mdash; transcendent
                   </p>
                 </div>
 
@@ -306,13 +303,13 @@ export default function Home() {
                   style={{ borderColor: BAUHAUS_COLORS[0] }}
                 >
                   <div className="flex items-baseline justify-between">
-                    <span className="font-serif text-xl">Rare</span>
+                    <span className="font-serif text-xl">Turbulence</span>
                     <span className="font-mono text-sm text-foreground/60">
                       8%
                     </span>
                   </div>
                   <p className="text-sm text-foreground/70">
-                    Sequence, Infinite, Ratio &mdash; mathematical concepts
+                    High density, dynamic generation
                   </p>
                 </div>
 
@@ -321,13 +318,13 @@ export default function Home() {
                   style={{ borderColor: BAUHAUS_COLORS[1] }}
                 >
                   <div className="flex items-baseline justify-between">
-                    <span className="font-serif text-xl">Uncommon</span>
+                    <span className="font-serif text-xl">Emergence</span>
                     <span className="font-mono text-sm text-foreground/60">
-                      20%
+                      15%
                     </span>
                   </div>
                   <p className="text-sm text-foreground/70">
-                    Enhanced &mdash; elevated density
+                    Enhanced density, elements emerging
                   </p>
                 </div>
 
@@ -336,13 +333,28 @@ export default function Home() {
                   style={{ borderColor: BAUHAUS_COLORS[3] }}
                 >
                   <div className="flex items-baseline justify-between">
-                    <span className="font-serif text-xl">Standard</span>
+                    <span className="font-serif text-xl">Clarity</span>
                     <span className="font-mono text-sm text-foreground/60">
-                      70%
+                      25%
                     </span>
                   </div>
                   <p className="text-sm text-foreground/70">
-                    Standard &mdash; balanced harmony
+                    Clear structured generation
+                  </p>
+                </div>
+
+                <div
+                  className="border-l-4 pl-6 py-4 space-y-2 sm:col-span-2 lg:col-span-1"
+                  style={{ borderColor: BAUHAUS_COLORS[4] }}
+                >
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-serif text-xl">Harmony</span>
+                    <span className="font-mono text-sm text-foreground/60">
+                      50%
+                    </span>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Balanced generation &mdash; natural equilibrium
                   </p>
                 </div>
               </div>
@@ -372,18 +384,21 @@ export default function Home() {
           </StorySection>
 
           {/* Section 8: CTA */}
-          <StorySection id="mint" className="bg-background">
-            <div className="text-center space-y-8 sm:space-y-12">
+          <StorySection id="mint" className="bg-background relative overflow-hidden">
+            {/* Geometric decoration - flipped */}
+            <GeometricArrows id="cta" flipVertical />
+
+            <div className="relative z-10 text-center space-y-8 sm:space-y-12">
               <div className="space-y-2 sm:space-y-4">
-                <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl">618 Pieces</h2>
+                <h2 className="font-serif text-5xl sm:text-6xl lg:text-7xl">1272 Pieces</h2>
                 <p className="font-mono text-base sm:text-lg text-foreground/60">
-                  1.<span style={{ color: BAUHAUS_COLORS[0] }}>618</span>...
+                  1.<span style={{ color: BAUHAUS_COLORS[0] }}>618</span>... × 2
                 </p>
               </div>
 
               <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto font-mono text-sm text-foreground/70">
                 <div className="text-center">
-                  <div className="text-2xl text-foreground">618</div>
+                  <div className="text-2xl text-foreground">1272</div>
                   <div>Supply</div>
                 </div>
                 <div className="text-center">
@@ -419,47 +434,10 @@ export default function Home() {
           </StorySection>
         </main>
 
-          {/* Section 9: Footer */}
-          <StorySection id="footer" className="bg-background">
-            <footer className="w-full">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-foreground/50">
-                {/* Contract Link */}
-                <a
-                  href={`https://basescan.org/address/${contractAddress}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors font-mono text-xs"
-                >
-                  Contract: {truncateAddress(contractAddress, 6)}
-                </a>
-
-                {/* Copyright */}
-                <p className="font-serif">
-                  Invisible Law &copy; {new Date().getFullYear()}
-                </p>
-
-                {/* Links */}
-                <div className="flex items-center gap-4">
-                  <a
-                    href="https://opensea.io/collection/invisible-law"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    OpenSea
-                  </a>
-                  <a
-                    href="https://x.com/invisiblelaw"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    X
-                  </a>
-                </div>
-              </div>
-            </footer>
-          </StorySection>
+        {/* Footer as final scroll-snap section */}
+        <section className="story-section min-h-screen flex items-center justify-center">
+          <Footer />
+        </section>
       </ScrollProvider>
     </>
   );

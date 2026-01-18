@@ -42,11 +42,6 @@ export function MintStatus() {
 
       {/* Progress bar */}
       <ProgressBar current={totalMinted} total={maxSupply} />
-
-      {/* Price */}
-      <p className="text-sm text-foreground/60">
-        {formatEthDisplay(mintPrice)} each
-      </p>
     </div>
   );
 }

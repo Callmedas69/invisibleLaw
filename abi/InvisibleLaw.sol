@@ -8,6 +8,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
+import {
+    MerkleProof
+} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 /**
  * @title Invisible Law
@@ -15,10 +18,11 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
  * @dev Fully on-chain SVG generation with weighted rarity
  *
  * Rarity Tiers:
- * - Legendary (2%): Spiral, Unity, Zero
- * - Rare (8%): Sequence, Infinite, Ratio
- * - Uncommon (20%): Enhanced density and elements
- * - Standard (70%): Standard generation
+ * - Chaos (2%): Highest density, maximum elements
+ * - Turbulence (8%): High density, dynamic generation
+ * - Emergence (15%): Enhanced density, elements emerging
+ * - Clarity (25%): Clear structured generation
+ * - Harmony (50%): Balanced generation
  *
  * Layers:
  * 1. Φ Grid Lines (9×9 at golden ratio positions)
@@ -38,10 +42,8 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     // CONSTANTS
     // =========================================================================
 
-    uint256 public constant MAX_SUPPLY = 618;
+    uint256 public constant MAX_SUPPLY = 1272;
     uint256 public constant MAX_PER_WALLET = 5;
-    uint256 public constant MAX_PER_TX = 5;
-    uint256 public constant OWNER_RESERVE = 50;
 
     // Canvas
     uint256 private constant CANVAS = 1000;
@@ -49,31 +51,19 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     uint256 private constant INNER_SIZE = 850;
 
     // Rarity thresholds (out of 100)
-    uint8 private constant LEGENDARY_THRESHOLD = 2; // 0-1 = 2%
-    uint8 private constant RARE_THRESHOLD = 10; // 2-9 = 8%
-    uint8 private constant UNCOMMON_THRESHOLD = 30; // 10-29 = 20%
-    // 30-99 = Standard (70%)
+    uint8 private constant CHAOS_THRESHOLD = 2; // 0-1 = 2%
+    uint8 private constant TURBULENCE_THRESHOLD = 10; // 2-9 = 8%
+    uint8 private constant EMERGENCE_THRESHOLD = 25; // 10-24 = 15%
+    uint8 private constant CLARITY_THRESHOLD = 50; // 25-49 = 25%
+    // 50-99 = Harmony (50%)
 
     // Rarity enum
     enum Rarity {
-        Standard,
-        Uncommon,
-        Rare,
-        Legendary
-    }
-
-    // Legendary subtypes
-    enum LegendaryType {
-        Spiral,
-        Unity,
-        Zero
-    }
-
-    // Rare subtypes
-    enum RareType {
-        Sequence,
-        Infinite,
-        Ratio
+        Harmony,
+        Clarity,
+        Emergence,
+        Turbulence,
+        Chaos
     }
 
     // =========================================================================
@@ -83,10 +73,8 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     error MintNotActive();
     error InvalidQuantity();
     error ExceedsSupply();
-    error ExceedsMaxPerTx();
     error ExceedsMaxPerWallet();
     error InsufficientPayment();
-    error OwnerReserveAlreadyMinted();
     error WithdrawFailed();
     error ZeroAddress();
     error RoyaltyTooHigh();
@@ -101,19 +89,29 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     event ContractURIUpdated(string uri);
     event RoyaltyUpdated(address receiver, uint96 feeNumerator);
     event TreasuryUpdated(address oldTreasury, address newTreasury);
+    event MerkleRootUpdated(bytes32 oldRoot, bytes32 newRoot);
+    event AllowlistFreeMintUpdated(uint256 oldValue, uint256 newValue);
 
     // =========================================================================
     // STATE
     // =========================================================================
 
-    uint256 public mintPrice = 0.00786 ether;
+    uint256 public mintPrice = 0.00618 ether;
     bool public mintActive;
-    bool public ownerReserveMinted;
     string private _contractURI;
     address public treasury;
 
     /// @dev Stores unpredictable seed per token (generated at mint)
     mapping(uint256 => uint256) private _mintSeed;
+
+    /// @dev Merkle root for allowlist verification (Ethos credibility score >= 1400)
+    bytes32 public merkleRoot;
+
+    /// @dev Tracks whether an address has claimed their allowlist free mint
+    mapping(address => bool) public allowlistClaimed;
+
+    /// @dev Number of free mints for allowlisted addresses
+    uint256 public allowlistFreeMint = 1;
 
     // =========================================================================
     // CONSTRUCTOR
@@ -127,31 +125,40 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     // MINTING
     // =========================================================================
 
-    function mint(uint256 quantity) external payable whenNotPaused {
+    function mint(
+        uint256 quantity,
+        bytes32[] calldata proof
+    ) external payable whenNotPaused {
         if (!mintActive) revert MintNotActive();
         if (quantity == 0) revert InvalidQuantity();
-        if (quantity > MAX_PER_TX) revert ExceedsMaxPerTx();
         if (_totalMinted() + quantity > MAX_SUPPLY) revert ExceedsSupply();
         if (_numberMinted(msg.sender) + quantity > MAX_PER_WALLET)
             revert ExceedsMaxPerWallet();
-        if (msg.value < mintPrice * quantity) revert InsufficientPayment();
+
+        // Calculate allowlist discount (free mints if valid proof and not yet claimed)
+        uint256 discount = 0;
+        if (
+            proof.length > 0 &&
+            !allowlistClaimed[msg.sender] &&
+            merkleRoot != bytes32(0)
+        ) {
+            bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+            if (MerkleProof.verify(proof, merkleRoot, leaf)) {
+                // Cap discount at quantity to prevent underflow
+                discount = allowlistFreeMint > quantity ? quantity : allowlistFreeMint;
+                allowlistClaimed[msg.sender] = true;
+            }
+        }
+
+        if (msg.value < mintPrice * (quantity - discount))
+            revert InsufficientPayment();
 
         _mint(msg.sender, quantity);
     }
 
-    function mintOwnerReserve(address to) external onlyOwner {
-        if (to == address(0)) revert ZeroAddress();
-        if (ownerReserveMinted) revert OwnerReserveAlreadyMinted();
-        if (_totalMinted() + OWNER_RESERVE > MAX_SUPPLY) revert ExceedsSupply();
-
-        ownerReserveMinted = true;
-        _mint(to, OWNER_RESERVE);
-    }
-
-    function ownerMint(address to, uint256 quantity) external onlyOwner {
-        if (to == address(0)) revert ZeroAddress();
+    function ownerMint(uint256 quantity) external onlyOwner {
         if (_totalMinted() + quantity > MAX_SUPPLY) revert ExceedsSupply();
-        _mint(to, quantity);
+        _mint(msg.sender, quantity);
     }
 
     // =========================================================================
@@ -191,6 +198,18 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         emit TreasuryUpdated(oldTreasury, newTreasury);
     }
 
+    function setMerkleRoot(bytes32 newRoot) external onlyOwner {
+        bytes32 oldRoot = merkleRoot;
+        merkleRoot = newRoot;
+        emit MerkleRootUpdated(oldRoot, newRoot);
+    }
+
+    function setAllowlistFreeMint(uint256 amount) external onlyOwner {
+        uint256 oldValue = allowlistFreeMint;
+        allowlistFreeMint = amount;
+        emit AllowlistFreeMintUpdated(oldValue, amount);
+    }
+
     function pause() external onlyOwner {
         _pause();
     }
@@ -223,6 +242,11 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         return _totalMinted();
     }
 
+    /// @notice Check if an address has claimed their allowlist free mint
+    function hasClaimedAllowlist(address account) external view returns (bool) {
+        return allowlistClaimed[account];
+    }
+
     /// @notice Get the stored seed for a token (for transparency)
     function getTokenSeed(uint256 tokenId) external view returns (uint256) {
         return _mintSeed[tokenId];
@@ -232,44 +256,32 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     function getTokenRarity(
         uint256 tokenId
     ) external view returns (string memory) {
-        (Rarity rarity, , ) = _getRarity(tokenId);
+        (Rarity rarity, ) = _getRarity(tokenId);
 
-        if (rarity == Rarity.Legendary) return "Legendary";
-        if (rarity == Rarity.Rare) return "Rare";
-        if (rarity == Rarity.Uncommon) return "Uncommon";
-        return "Standard";
+        if (rarity == Rarity.Chaos) return "Chaos";
+        if (rarity == Rarity.Turbulence) return "Turbulence";
+        if (rarity == Rarity.Emergence) return "Emergence";
+        if (rarity == Rarity.Clarity) return "Clarity";
+        return "Harmony";
     }
 
     /// @notice Get detailed traits for a token
     function getTokenTraits(
         uint256 tokenId
-    )
-        external
-        view
-        returns (string memory rarity, string memory subtype, uint256 seed)
-    {
-        (Rarity r, uint256 subType, uint256 s) = _getRarity(tokenId);
+    ) external view returns (string memory rarity, uint256 seed) {
+        (Rarity r, uint256 s) = _getRarity(tokenId);
         seed = s;
 
-        if (r == Rarity.Legendary) {
-            rarity = "Legendary";
-            if (LegendaryType(subType) == LegendaryType.Spiral)
-                subtype = "Spiral";
-            else if (LegendaryType(subType) == LegendaryType.Unity)
-                subtype = "Unity";
-            else subtype = "Zero";
-        } else if (r == Rarity.Rare) {
-            rarity = "Rare";
-            if (RareType(subType) == RareType.Sequence) subtype = "Sequence";
-            else if (RareType(subType) == RareType.Infinite)
-                subtype = "Infinite";
-            else subtype = "Ratio";
-        } else if (r == Rarity.Uncommon) {
-            rarity = "Uncommon";
-            subtype = "Enhanced";
+        if (r == Rarity.Chaos) {
+            rarity = "Chaos";
+        } else if (r == Rarity.Turbulence) {
+            rarity = "Turbulence";
+        } else if (r == Rarity.Emergence) {
+            rarity = "Emergence";
+        } else if (r == Rarity.Clarity) {
+            rarity = "Clarity";
         } else {
-            rarity = "Standard";
-            subtype = "Standard";
+            rarity = "Harmony";
         }
     }
 
@@ -279,7 +291,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
 
     function _getRarity(
         uint256 tokenId
-    ) internal view returns (Rarity, uint256 subType, uint256 seed) {
+    ) internal view returns (Rarity, uint256 seed) {
         seed = _mintSeed[tokenId];
 
         // Fallback for unminted tokens (prevents revert, but won't be accurate)
@@ -291,16 +303,16 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
 
         uint256 rarityRoll = seed % 100;
 
-        if (rarityRoll < LEGENDARY_THRESHOLD) {
-            subType = (seed >> 8) % 3;
-            return (Rarity.Legendary, subType, seed);
-        } else if (rarityRoll < RARE_THRESHOLD) {
-            subType = (seed >> 8) % 3;
-            return (Rarity.Rare, subType, seed);
-        } else if (rarityRoll < UNCOMMON_THRESHOLD) {
-            return (Rarity.Uncommon, 0, seed);
+        if (rarityRoll < CHAOS_THRESHOLD) {
+            return (Rarity.Chaos, seed);
+        } else if (rarityRoll < TURBULENCE_THRESHOLD) {
+            return (Rarity.Turbulence, seed);
+        } else if (rarityRoll < EMERGENCE_THRESHOLD) {
+            return (Rarity.Emergence, seed);
+        } else if (rarityRoll < CLARITY_THRESHOLD) {
+            return (Rarity.Clarity, seed);
         } else {
-            return (Rarity.Standard, 0, seed);
+            return (Rarity.Harmony, seed);
         }
     }
 
@@ -313,32 +325,22 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     ) public view override(ERC721A, IERC721A) returns (string memory) {
         if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
 
-        (Rarity rarity, uint256 subType, ) = _getRarity(tokenId);
+        (Rarity rarity, ) = _getRarity(tokenId);
         string memory image = _genStaticSVG(tokenId);
         string memory animation = _generateSVG(tokenId);
 
         string memory rarityStr;
-        string memory subtypeStr;
 
-        if (rarity == Rarity.Legendary) {
-            rarityStr = "Legendary";
-            if (LegendaryType(subType) == LegendaryType.Spiral)
-                subtypeStr = "Spiral";
-            else if (LegendaryType(subType) == LegendaryType.Unity)
-                subtypeStr = "Unity";
-            else subtypeStr = "Zero";
-        } else if (rarity == Rarity.Rare) {
-            rarityStr = "Rare";
-            if (RareType(subType) == RareType.Sequence) subtypeStr = "Sequence";
-            else if (RareType(subType) == RareType.Infinite)
-                subtypeStr = "Infinite";
-            else subtypeStr = "Ratio";
-        } else if (rarity == Rarity.Uncommon) {
-            rarityStr = "Uncommon";
-            subtypeStr = "Enhanced";
+        if (rarity == Rarity.Chaos) {
+            rarityStr = "Chaos";
+        } else if (rarity == Rarity.Turbulence) {
+            rarityStr = "Turbulence";
+        } else if (rarity == Rarity.Emergence) {
+            rarityStr = "Emergence";
+        } else if (rarity == Rarity.Clarity) {
+            rarityStr = "Clarity";
         } else {
-            rarityStr = "Standard";
-            subtypeStr = "Standard";
+            rarityStr = "Harmony";
         }
 
         string memory json = string(
@@ -350,9 +352,6 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
                 '"attributes": [',
                 '{"trait_type": "Tier", "value": "',
                 rarityStr,
-                '"},',
-                '{"trait_type": "Type", "value": "',
-                subtypeStr,
                 '"},',
                 '{"trait_type": "Style", "value": "Bauhaus Mosaic"}',
                 "],",
@@ -397,7 +396,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         return
             string(
                 abi.encodePacked(
-                    "<!DOCTYPE html><html><head><meta charset=\"UTF-8\">",
+                    '<!DOCTYPE html><html><head><meta charset="UTF-8">',
                     "<style>html,body{margin:0;padding:0;height:100%;width:100%;display:flex;justify-content:center;align-items:center;background:#000}</style>",
                     "</head><body>",
                     svg,
@@ -410,7 +409,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     function _generateSVG(
         uint256 tokenId
     ) internal view returns (string memory) {
-        (Rarity rarity, uint256 subType, uint256 seed) = _getRarity(tokenId);
+        (Rarity rarity, uint256 seed) = _getRarity(tokenId);
 
         bytes memory svg = abi.encodePacked(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">',
@@ -423,10 +422,8 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
 
         svg = abi.encodePacked(svg, _genGridLines(false));
 
-        if (
-            rarity == Rarity.Legendary &&
-            LegendaryType(subType) == LegendaryType.Spiral
-        ) {
+        // Chaos tier features spiral pattern
+        if (rarity == Rarity.Chaos) {
             svg = abi.encodePacked(svg, _genSpiral());
         } else {
             svg = abi.encodePacked(
@@ -435,8 +432,8 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
             );
         }
 
-        svg = abi.encodePacked(svg, _genMosaic(seed, rarity, subType, false));
-        svg = abi.encodePacked(svg, _genDots(seed, rarity, subType, false));
+        svg = abi.encodePacked(svg, _genMosaic(seed, rarity, false));
+        svg = abi.encodePacked(svg, _genDots(seed, rarity, false));
         svg = abi.encodePacked(svg, _genRings(seed, rarity, false));
         svg = abi.encodePacked(svg, _genExtLines(seed, rarity));
         svg = abi.encodePacked(svg, "</g></svg>");
@@ -448,7 +445,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     function _genStaticSVG(
         uint256 tokenId
     ) internal view returns (string memory) {
-        (Rarity rarity, uint256 subType, uint256 seed) = _getRarity(tokenId);
+        (Rarity rarity, uint256 seed) = _getRarity(tokenId);
 
         bytes memory svg = abi.encodePacked(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">',
@@ -459,10 +456,8 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
 
         svg = abi.encodePacked(svg, _genGridLines(true));
 
-        if (
-            rarity == Rarity.Legendary &&
-            LegendaryType(subType) == LegendaryType.Spiral
-        ) {
+        // Chaos tier features spiral pattern
+        if (rarity == Rarity.Chaos) {
             svg = abi.encodePacked(svg, _genSpiral());
         } else {
             svg = abi.encodePacked(
@@ -471,10 +466,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
             );
         }
 
-        svg = abi.encodePacked(svg, _genMosaic(seed, rarity, subType, true));
-        // svg = abi.encodePacked(svg, _genDots(seed, rarity, subType, true));
-        // svg = abi.encodePacked(svg, _genRings(seed, rarity, true));
-        // svg = abi.encodePacked(svg, _genExtLines(seed, rarity));
+        svg = abi.encodePacked(svg, _genMosaic(seed, rarity, true));
         svg = abi.encodePacked(svg, "</svg>");
 
         return string(svg);
@@ -567,7 +559,6 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     function _genMosaic(
         uint256 seed,
         Rarity rarity,
-        uint256 subType,
         bool staticMode
     ) internal pure returns (bytes memory) {
         bytes memory rects;
@@ -578,34 +569,26 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         uint256 outsideChance;
         uint256 forcedColorIdx = 99;
 
-        if (rarity == Rarity.Legendary) {
-            if (LegendaryType(subType) == LegendaryType.Zero) {
-                insideChance = 15;
-                outsideChance = 5;
-            } else if (LegendaryType(subType) == LegendaryType.Unity) {
-                insideChance = 70;
-                outsideChance = 20;
-                forcedColorIdx = (seed >> 200) % 7;
-            } else {
-                insideChance = 65;
-                outsideChance = 15;
-            }
-        } else if (rarity == Rarity.Rare) {
-            if (RareType(subType) == RareType.Infinite) {
-                insideChance = 90;
-                outsideChance = 50;
-            } else if (RareType(subType) == RareType.Ratio) {
-                insideChance = 70;
-                outsideChance = 20;
-                forcedColorIdx = 100 + ((seed >> 200) % 2);
-            } else {
-                insideChance = 65;
-                outsideChance = 15;
-            }
-        } else if (rarity == Rarity.Uncommon) {
+        // Visual parameters based on rarity tier
+        if (rarity == Rarity.Chaos) {
+            // Chaos: High density, unique color scheme
+            insideChance = 90;
+            outsideChance = 50;
+            forcedColorIdx = (seed >> 200) % 7;
+        } else if (rarity == Rarity.Turbulence) {
+            // Turbulence: High density, dynamic
+            insideChance = 85;
+            outsideChance = 40;
+        } else if (rarity == Rarity.Emergence) {
+            // Emergence: Enhanced density
             insideChance = 75;
-            outsideChance = 25;
+            outsideChance = 30;
+        } else if (rarity == Rarity.Clarity) {
+            // Clarity: Moderate density, structured
+            insideChance = 70;
+            outsideChance = 20;
         } else {
+            // Harmony: Balanced generation
             insideChance = 65;
             outsideChance = 15;
         }
@@ -718,7 +701,6 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     function _genDots(
         uint256 seed,
         Rarity rarity,
-        uint256 subType,
         bool staticMode
     ) internal pure returns (bytes memory) {
         bytes memory dots;
@@ -726,16 +708,17 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         uint8[6] memory fib = [10, 15, 25, 40, 65, 110];
 
         uint256 dotChance;
-        if (rarity == Rarity.Rare && RareType(subType) == RareType.Sequence) {
+        // Dot density based on rarity tier
+        if (rarity == Rarity.Chaos) {
             dotChance = 70;
-        } else if (
-            rarity == Rarity.Legendary &&
-            LegendaryType(subType) == LegendaryType.Zero
-        ) {
+        } else if (rarity == Rarity.Turbulence) {
+            dotChance = 55;
+        } else if (rarity == Rarity.Emergence) {
             dotChance = 40;
-        } else if (rarity == Rarity.Uncommon) {
+        } else if (rarity == Rarity.Clarity) {
             dotChance = 35;
         } else {
+            // Harmony
             dotChance = 25;
         }
 
@@ -816,13 +799,17 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         uint8[6] memory fib = [10, 15, 25, 40, 65, 110];
 
         uint256 numGroups;
-        if (rarity == Rarity.Uncommon) {
-            numGroups = 4 + ((seed >> 100) % 2);
-        } else if (rarity == Rarity.Rare) {
+        // Ring groups based on rarity tier
+        if (rarity == Rarity.Chaos) {
+            numGroups = 6 + ((seed >> 100) % 3);
+        } else if (rarity == Rarity.Turbulence) {
             numGroups = 5 + ((seed >> 100) % 2);
-        } else if (rarity == Rarity.Legendary) {
-            numGroups = 3;
+        } else if (rarity == Rarity.Emergence) {
+            numGroups = 4 + ((seed >> 100) % 2);
+        } else if (rarity == Rarity.Clarity) {
+            numGroups = 3 + ((seed >> 100) % 2);
         } else {
+            // Harmony
             numGroups = 2 + ((seed >> 100) % 3);
         }
 
@@ -940,11 +927,17 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         uint8[6] memory fib = [10, 15, 25, 40, 65, 110];
 
         uint256 numLines;
-        if (rarity == Rarity.Uncommon) {
-            numLines = 6 + ((seed >> 110) % 4);
-        } else if (rarity == Rarity.Rare) {
+        // Extended lines based on rarity tier
+        if (rarity == Rarity.Chaos) {
+            numLines = 10 + ((seed >> 110) % 4);
+        } else if (rarity == Rarity.Turbulence) {
             numLines = 8 + ((seed >> 110) % 4);
+        } else if (rarity == Rarity.Emergence) {
+            numLines = 6 + ((seed >> 110) % 4);
+        } else if (rarity == Rarity.Clarity) {
+            numLines = 5 + ((seed >> 110) % 3);
         } else {
+            // Harmony
             numLines = 4 + ((seed >> 110) % 5);
         }
 

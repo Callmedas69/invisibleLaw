@@ -39,6 +39,7 @@ export function QuantityPicker({
         disabled={!canDecrement}
         className="w-12 h-12 sm:w-11 sm:h-11 flex items-center justify-center border border-foreground/20
                    hover:border-foreground/40 active:bg-foreground/5 disabled:opacity-30 disabled:cursor-not-allowed
+                   focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2
                    transition-colors text-xl sm:text-lg font-mono"
         aria-label="Decrease quantity"
       >
@@ -46,7 +47,11 @@ export function QuantityPicker({
       </button>
 
       {/* Value display */}
-      <span className="w-10 sm:w-8 text-center text-2xl sm:text-xl font-mono tabular-nums">
+      <span
+        className="w-10 sm:w-8 text-center text-2xl sm:text-xl font-mono tabular-nums"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {value}
       </span>
 
@@ -57,6 +62,7 @@ export function QuantityPicker({
         disabled={!canIncrement}
         className="w-12 h-12 sm:w-11 sm:h-11 flex items-center justify-center border border-foreground/20
                    hover:border-foreground/40 active:bg-foreground/5 disabled:opacity-30 disabled:cursor-not-allowed
+                   focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2
                    transition-colors text-xl sm:text-lg font-mono"
         aria-label="Increase quantity"
       >

@@ -12,8 +12,10 @@ export interface ContractData {
   // Supply
   totalMinted: number;
   maxSupply: number;
-  maxPerTx: number;
   maxPerWallet: number;
+
+  // Allowlist
+  allowlistFreeMint: number;
 
   // User-specific (only when connected)
   userMinted: number;
@@ -64,12 +66,12 @@ export function useContractReads(): ContractData {
       {
         address: contractAddress,
         abi: contractABI,
-        functionName: "MAX_PER_TX",
+        functionName: "MAX_PER_WALLET",
       },
       {
         address: contractAddress,
         abi: contractABI,
-        functionName: "MAX_PER_WALLET",
+        functionName: "allowlistFreeMint",
       },
     ],
     query: {
@@ -94,9 +96,9 @@ export function useContractReads(): ContractData {
   const mintActive = (staticData?.[1]?.result as boolean | undefined) ?? false;
   const paused = (staticData?.[2]?.result as boolean | undefined) ?? false;
   const totalMinted = Number((staticData?.[3]?.result as bigint | undefined) ?? BigInt(0));
-  const maxSupply = Number((staticData?.[4]?.result as bigint | undefined) ?? BigInt(618));
-  const maxPerTx = Number((staticData?.[5]?.result as bigint | undefined) ?? BigInt(5));
-  const maxPerWallet = Number((staticData?.[6]?.result as bigint | undefined) ?? BigInt(5));
+  const maxSupply = Number((staticData?.[4]?.result as bigint | undefined) ?? BigInt(1272));
+  const maxPerWallet = Number((staticData?.[5]?.result as bigint | undefined) ?? BigInt(5));
+  const allowlistFreeMint = Number((staticData?.[6]?.result as bigint | undefined) ?? BigInt(1));
 
   // Parse user data
   const userMinted = isConnected
@@ -122,8 +124,8 @@ export function useContractReads(): ContractData {
     paused,
     totalMinted,
     maxSupply,
-    maxPerTx,
     maxPerWallet,
+    allowlistFreeMint,
     userMinted,
     remaining,
     isSoldOut,

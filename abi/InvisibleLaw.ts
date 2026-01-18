@@ -1,18 +1,11 @@
 // Base Mainnet (Chain ID: 8453)
-export const INVISIBLE_LAW_ADDRESS = "0xfc1B366495528e5BCd700a048c779A3A09Fd1EaC" as const;
+export const INVISIBLE_LAW_ADDRESS = "0x5De2AD02bF64f9d8D74b9CB321A615d85c8a4019" as const;
 
 export const INVISIBLE_LAW_ABI = [
   {
     type: "constructor",
     inputs: [],
     stateMutability: "nonpayable",
-  },
-  {
-    type: "function",
-    name: "MAX_PER_TX",
-    inputs: [],
-    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-    stateMutability: "view",
   },
   {
     type: "function",
@@ -30,7 +23,14 @@ export const INVISIBLE_LAW_ABI = [
   },
   {
     type: "function",
-    name: "OWNER_RESERVE",
+    name: "allowlistClaimed",
+    inputs: [{ name: "", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "allowlistFreeMint",
     inputs: [],
     outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
@@ -138,9 +138,15 @@ export const INVISIBLE_LAW_ABI = [
     inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
     outputs: [
       { name: "rarity", type: "string", internalType: "string" },
-      { name: "subtype", type: "string", internalType: "string" },
       { name: "seed", type: "uint256", internalType: "uint256" },
     ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "hasClaimedAllowlist",
+    inputs: [{ name: "account", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
   },
   {
@@ -155,8 +161,18 @@ export const INVISIBLE_LAW_ABI = [
   },
   {
     type: "function",
+    name: "merkleRoot",
+    inputs: [],
+    outputs: [{ name: "", type: "bytes32", internalType: "bytes32" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "mint",
-    inputs: [{ name: "quantity", type: "uint256", internalType: "uint256" }],
+    inputs: [
+      { name: "quantity", type: "uint256", internalType: "uint256" },
+      { name: "proof", type: "bytes32[]", internalType: "bytes32[]" },
+    ],
     outputs: [],
     stateMutability: "payable",
   },
@@ -166,13 +182,6 @@ export const INVISIBLE_LAW_ABI = [
     inputs: [],
     outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "mintOwnerReserve",
-    inputs: [{ name: "to", type: "address", internalType: "address" }],
-    outputs: [],
-    stateMutability: "nonpayable",
   },
   {
     type: "function",
@@ -205,10 +214,7 @@ export const INVISIBLE_LAW_ABI = [
   {
     type: "function",
     name: "ownerMint",
-    inputs: [
-      { name: "to", type: "address", internalType: "address" },
-      { name: "quantity", type: "uint256", internalType: "uint256" },
-    ],
+    inputs: [{ name: "quantity", type: "uint256", internalType: "uint256" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -217,13 +223,6 @@ export const INVISIBLE_LAW_ABI = [
     name: "ownerOf",
     inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
     outputs: [{ name: "", type: "address", internalType: "address" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "ownerReserveMinted",
-    inputs: [],
-    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
   },
   {
@@ -285,6 +284,13 @@ export const INVISIBLE_LAW_ABI = [
   },
   {
     type: "function",
+    name: "setAllowlistFreeMint",
+    inputs: [{ name: "amount", type: "uint256", internalType: "uint256" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     name: "setApprovalForAll",
     inputs: [
       { name: "operator", type: "address", internalType: "address" },
@@ -297,6 +303,13 @@ export const INVISIBLE_LAW_ABI = [
     type: "function",
     name: "setContractURI",
     inputs: [{ name: "uri", type: "string", internalType: "string" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "setMerkleRoot",
+    inputs: [{ name: "newRoot", type: "bytes32", internalType: "bytes32" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -425,6 +438,15 @@ export const INVISIBLE_LAW_ABI = [
   },
   {
     type: "event",
+    name: "AllowlistFreeMintUpdated",
+    inputs: [
+      { name: "oldValue", type: "uint256", indexed: false, internalType: "uint256" },
+      { name: "newValue", type: "uint256", indexed: false, internalType: "uint256" },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
     name: "Approval",
     inputs: [
       { name: "owner", type: "address", indexed: true, internalType: "address" },
@@ -458,6 +480,15 @@ export const INVISIBLE_LAW_ABI = [
     type: "event",
     name: "ContractURIUpdated",
     inputs: [{ name: "uri", type: "string", indexed: false, internalType: "string" }],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "MerkleRootUpdated",
+    inputs: [
+      { name: "oldRoot", type: "bytes32", indexed: false, internalType: "bytes32" },
+      { name: "newRoot", type: "bytes32", indexed: false, internalType: "bytes32" },
+    ],
     anonymous: false,
   },
   {
@@ -558,7 +589,6 @@ export const INVISIBLE_LAW_ABI = [
     ],
   },
   { type: "error", name: "EnforcedPause", inputs: [] },
-  { type: "error", name: "ExceedsMaxPerTx", inputs: [] },
   { type: "error", name: "ExceedsMaxPerWallet", inputs: [] },
   { type: "error", name: "ExceedsSupply", inputs: [] },
   { type: "error", name: "ExpectedPause", inputs: [] },
@@ -581,7 +611,6 @@ export const INVISIBLE_LAW_ABI = [
     inputs: [{ name: "account", type: "address", internalType: "address" }],
   },
   { type: "error", name: "OwnerQueryForNonexistentToken", inputs: [] },
-  { type: "error", name: "OwnerReserveAlreadyMinted", inputs: [] },
   { type: "error", name: "OwnershipNotInitializedForExtraData", inputs: [] },
   { type: "error", name: "RoyaltyTooHigh", inputs: [] },
   { type: "error", name: "SequentialMintExceedsLimit", inputs: [] },
