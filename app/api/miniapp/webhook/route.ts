@@ -30,53 +30,41 @@ export async function POST(request: NextRequest) {
     // This validates the signature using Neynar to check app keys
     const data = await parseWebhookEvent(body, verifyAppKeyWithNeynar);
 
-    const { event, fid } = data;
-
-    console.log(`[Webhook] Received event: ${event} for FID: ${fid}`);
+    console.log(`[Webhook] Received event: ${data.event} for FID: ${data.fid}`);
 
     // Handle different event types per Farcaster spec
-    switch (event) {
-      case "miniapp_added":
-        // User added the miniapp
-        // notificationDetails may be included if client equates adding to enabling notifications
-        if (data.notificationDetails) {
-          await saveNotificationToken(
-            fid,
-            data.notificationDetails.token,
-            data.notificationDetails.url
-          );
-          console.log(`[Webhook] FID ${fid} added miniapp with notifications enabled`);
-        } else {
-          console.log(`[Webhook] FID ${fid} added the miniapp`);
-        }
-        break;
-
-      case "miniapp_removed":
-        // User removed the miniapp - clean up notification token
-        await deleteNotificationToken(fid);
-        console.log(`[Webhook] FID ${fid} removed the miniapp, token deleted`);
-        break;
-
-      case "notifications_enabled":
-        // User enabled notifications - store the token
-        if (data.notificationDetails) {
-          await saveNotificationToken(
-            fid,
-            data.notificationDetails.token,
-            data.notificationDetails.url
-          );
-          console.log(`[Webhook] FID ${fid} enabled notifications, token saved`);
-        }
-        break;
-
-      case "notifications_disabled":
-        // User disabled notifications - remove the token
-        await deleteNotificationToken(fid);
-        console.log(`[Webhook] FID ${fid} disabled notifications, token deleted`);
-        break;
-
-      default:
-        console.log(`[Webhook] Unknown event type: ${event}`);
+    // data is a discriminated union based on event type
+    if (data.event === "miniapp_added") {
+      // User added the miniapp
+      // notificationDetails may be included if client equates adding to enabling notifications
+      if (data.notificationDetails) {
+        await saveNotificationToken(
+          data.fid,
+          data.notificationDetails.token,
+          data.notificationDetails.url
+        );
+        console.log(`[Webhook] FID ${data.fid} added miniapp with notifications enabled`);
+      } else {
+        console.log(`[Webhook] FID ${data.fid} added the miniapp`);
+      }
+    } else if (data.event === "miniapp_removed") {
+      // User removed the miniapp - clean up notification token
+      await deleteNotificationToken(data.fid);
+      console.log(`[Webhook] FID ${data.fid} removed the miniapp, token deleted`);
+    } else if (data.event === "notifications_enabled") {
+      // User enabled notifications - store the token
+      await saveNotificationToken(
+        data.fid,
+        data.notificationDetails.token,
+        data.notificationDetails.url
+      );
+      console.log(`[Webhook] FID ${data.fid} enabled notifications, token saved`);
+    } else if (data.event === "notifications_disabled") {
+      // User disabled notifications - remove the token
+      await deleteNotificationToken(data.fid);
+      console.log(`[Webhook] FID ${data.fid} disabled notifications, token deleted`);
+    } else {
+      console.log(`[Webhook] Unknown event type`);
     }
 
     return NextResponse.json({ success: true });

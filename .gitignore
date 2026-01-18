@@ -43,5 +43,5 @@ next-env.d.ts
 
 .mcp.json
 Narrative.md
-# .docs/*
-# CLAUDE.md
+.docs/*
+CLAUDE.md
