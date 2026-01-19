@@ -7,7 +7,7 @@ import { WalletStatus } from "./WalletStatus";
 export function MintSection() {
   return (
     <section className="w-full max-w-md mx-auto">
-      <div className="border border-foreground/10 bg-background p-6 sm:p-8 space-y-8">
+      <div className="border border-foreground/10 bg-background p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Supply and status */}
         <MintStatus />
 

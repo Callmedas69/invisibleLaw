@@ -10,7 +10,7 @@ export default function MintPage() {
       <DrawerNav />
       <MintBackground />
       <section className="story-section relative z-10 flex flex-col items-center justify-center px-4 sm:px-8 text-center">
-        <div className="max-w-2xl mx-auto space-y-6 mb-12">
+        <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6 mb-6 sm:mb-12">
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl tracking-tight">
             Mint
           </h1>

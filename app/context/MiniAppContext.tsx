@@ -30,6 +30,12 @@ interface MiniAppContextData {
   user: FarcasterUser;
 }
 
+/** Options for composing a cast */
+interface ComposeCastOptions {
+  text?: string;
+  embeds?: string[];
+}
+
 interface MiniAppContextValue {
   /** Whether the app is running inside Farcaster (Warpcast) */
   isMiniApp: boolean;
@@ -43,6 +49,8 @@ interface MiniAppContextValue {
   close: () => void;
   /** Prompt user to add this miniapp to their home screen */
   addMiniApp: () => void;
+  /** Open composer to create a cast, returns cast hash if successful */
+  composeCast: (options: ComposeCastOptions) => Promise<string | null>;
 }
 
 const MiniAppContext = createContext<MiniAppContextValue>({
@@ -52,6 +60,7 @@ const MiniAppContext = createContext<MiniAppContextValue>({
   openUrl: () => {},
   close: () => {},
   addMiniApp: () => {},
+  composeCast: async () => null,
 });
 
 export function MiniAppProvider({ children }: { children: ReactNode }) {
@@ -120,6 +129,28 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
     }
   }, [isMiniApp]);
 
+  // Open composer to create a cast
+  const composeCast = useCallback(
+    async (options: ComposeCastOptions): Promise<string | null> => {
+      if (!isMiniApp) {
+        console.warn("[MiniAppContext] composeCast called outside miniapp");
+        return null;
+      }
+      try {
+        const result = await sdk.actions.composeCast({
+          text: options.text,
+          embeds: options.embeds,
+        });
+        // Return the cast hash if successful
+        return result?.cast?.hash ?? null;
+      } catch (error) {
+        console.error("[MiniAppContext] Failed to compose cast:", error);
+        return null;
+      }
+    },
+    [isMiniApp]
+  );
+
   return (
     <MiniAppContext.Provider
       value={{
@@ -129,6 +160,7 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
         openUrl,
         close,
         addMiniApp,
+        composeCast,
       }}
     >
       {children}

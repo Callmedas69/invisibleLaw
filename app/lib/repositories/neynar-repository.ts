@@ -56,6 +56,14 @@ export interface NeynarFollowResult {
   isFollowing: boolean;
 }
 
+/** Repository return type for cast lookup */
+export interface NeynarCastResult {
+  hash: string;
+  authorFid: number;
+  text: string;
+  exists: boolean;
+}
+
 /**
  * Fetches Farcaster user data by wallet address.
  *
@@ -240,6 +248,63 @@ export async function checkNeynarFollowStatus(
     };
   } catch (error) {
     console.error("[NeynarRepository] Failed to check follow status:", error);
+    return null;
+  }
+}
+
+/**
+ * Fetches a cast by its hash.
+ *
+ * Data fetching ONLY - no business logic.
+ *
+ * @param hash - The cast hash to look up
+ * @returns Cast data or null if not found
+ */
+export async function fetchCastByHash(
+  hash: string
+): Promise<NeynarCastResult | null> {
+  try {
+    const response = await fetch(
+      `${NEYNAR_API_BASE}/cast?identifier=${hash}&type=hash`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          api_key: getNeynarApiKey(),
+        },
+        // Cache for 1 minute
+        next: { revalidate: 60 },
+      }
+    );
+
+    if (!response.ok) {
+      // 404 means cast not found - not an error, just doesn't exist
+      if (response.status === 404) {
+        return null;
+      }
+      console.error(
+        `[NeynarRepository] API error: ${response.status} ${response.statusText}`
+      );
+      return null;
+    }
+
+    const data = await response.json();
+
+    // Response format: { cast: { hash, author: { fid }, text, ... } }
+    const cast = data.cast;
+
+    if (!cast) {
+      return null;
+    }
+
+    return {
+      hash: cast.hash,
+      authorFid: cast.author?.fid ?? 0,
+      text: cast.text ?? "",
+      exists: true,
+    };
+  } catch (error) {
+    console.error("[NeynarRepository] Failed to fetch cast by hash:", error);
     return null;
   }
 }

@@ -258,7 +258,7 @@ export default function Home() {
                 ].map((layer, i) => (
                   <div
                     key={i}
-                    className="border border-foreground/10 p-3 sm:p-4 space-y-1"
+                    className="border border-foreground/10 p-2 sm:p-4 space-y-1"
                   >
                     <div className="flex items-center gap-2 sm:gap-3">
                       <div
@@ -288,7 +288,7 @@ export default function Home() {
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
-                <div className="border-l-4 border-foreground/80 pl-6 py-4 space-y-2">
+                <div className="border-l-4 border-foreground/80 pl-4 sm:pl-6 py-2 sm:py-4 space-y-1 sm:space-y-2">
                   <div className="flex items-baseline justify-between">
                     <span className="font-serif text-xl">Chaos</span>
                     <span className="font-mono text-sm text-foreground/60">
@@ -301,7 +301,7 @@ export default function Home() {
                 </div>
 
                 <div
-                  className="border-l-4 pl-6 py-4 space-y-2"
+                  className="border-l-4 pl-4 sm:pl-6 py-2 sm:py-4 space-y-1 sm:space-y-2"
                   style={{ borderColor: BAUHAUS_COLORS[0] }}
                 >
                   <div className="flex items-baseline justify-between">
@@ -316,7 +316,7 @@ export default function Home() {
                 </div>
 
                 <div
-                  className="border-l-4 pl-6 py-4 space-y-2"
+                  className="border-l-4 pl-4 sm:pl-6 py-2 sm:py-4 space-y-1 sm:space-y-2"
                   style={{ borderColor: BAUHAUS_COLORS[1] }}
                 >
                   <div className="flex items-baseline justify-between">
@@ -331,7 +331,7 @@ export default function Home() {
                 </div>
 
                 <div
-                  className="border-l-4 pl-6 py-4 space-y-2"
+                  className="border-l-4 pl-4 sm:pl-6 py-2 sm:py-4 space-y-1 sm:space-y-2"
                   style={{ borderColor: BAUHAUS_COLORS[3] }}
                 >
                   <div className="flex items-baseline justify-between">
@@ -346,7 +346,7 @@ export default function Home() {
                 </div>
 
                 <div
-                  className="border-l-4 pl-6 py-4 space-y-2 sm:col-span-2 lg:col-span-1"
+                  className="border-l-4 pl-4 sm:pl-6 py-2 sm:py-4 space-y-1 sm:space-y-2 sm:col-span-2 lg:col-span-1"
                   style={{ borderColor: BAUHAUS_COLORS[4] }}
                 >
                   <div className="flex items-baseline justify-between">

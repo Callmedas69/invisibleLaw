@@ -10,7 +10,7 @@ interface ErrorResponse {
 }
 
 /**
- * GET /api/eligibility/check?address=0x...&xFollowConfirmed=true&fid=12345
+ * GET /api/eligibility/check?address=0x...&xFollowConfirmed=true&fid=12345&shareHash=0x...
  *
  * Checks eligibility for a wallet address.
  * Transport layer only - validates input and calls business logic.
@@ -19,6 +19,7 @@ interface ErrorResponse {
  * - address: Ethereum wallet address (required)
  * - xFollowConfirmed: User's self-declaration of X follow (optional, default false)
  * - fid: Farcaster user ID from miniapp context (optional, speeds up lookup)
+ * - shareHash: Cast hash to verify share requirement (optional)
  */
 export async function GET(
   request: NextRequest
@@ -28,6 +29,7 @@ export async function GET(
   const xFollowConfirmed = searchParams.get("xFollowConfirmed") === "true";
   const fidParam = searchParams.get("fid");
   const fid = fidParam ? parseInt(fidParam, 10) : undefined;
+  const shareHash = searchParams.get("shareHash") || undefined;
 
   // Input validation
   if (!address) {
@@ -56,6 +58,7 @@ export async function GET(
   const result = await checkEligibility(address, {
     xFollowConfirmed,
     fid,
+    shareHash,
   });
 
   return NextResponse.json(result);

@@ -13,6 +13,7 @@ interface AddRequest {
   address: string;
   xFollowConfirmed: boolean;
   fid?: number;
+  shareHash?: string;
 }
 
 /**
@@ -25,7 +26,8 @@ interface AddRequest {
  * {
  *   "address": "0x...",
  *   "xFollowConfirmed": true,
- *   "fid": 12345 // optional, from miniapp context
+ *   "fid": 12345, // optional, from miniapp context
+ *   "shareHash": "0x..." // optional, cast hash for share verification
  * }
  */
 export async function POST(
@@ -42,7 +44,7 @@ export async function POST(
     );
   }
 
-  const { address, xFollowConfirmed, fid } = body;
+  const { address, xFollowConfirmed, fid, shareHash } = body;
 
   // Input validation
   if (!address) {
@@ -66,10 +68,11 @@ export async function POST(
     );
   }
 
-  // Call business logic with optional fid
+  // Call business logic with optional fid and shareHash
   const result = await addToAllowlistIfEligible(address, {
     xFollowConfirmed,
     fid,
+    shareHash,
   });
 
   // Return appropriate status code based on result

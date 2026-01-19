@@ -10,7 +10,6 @@ export const ELIGIBILITY_CONFIG = {
   thresholds: {
     ethos: 1300,     // Ethos score range: 0-2800
     neynar: 0.7,     // Neynar score range: 0-1
-    quotient: 0.6,   // Quotient score range: 0-1
   },
 
   /** Social follow requirements - need BOTH to pass */
@@ -25,9 +24,10 @@ export const ELIGIBILITY_CONFIG = {
     },
   },
 
-  /** Quotient API configuration */
-  quotient: {
-    queryId: "PLACEHOLDER_QUERY_ID", // From Quotient dashboard
+  /** Share requirement - must share miniapp on Farcaster */
+  share: {
+    text: "Check your eligibility for Invisible Law allowlist!",
+    embeds: ["https://warpcast.com/~/add-cast-action/invisiblelaw.geoart.studio"],
   },
 } as const;
 
@@ -36,3 +36,6 @@ export type EligibilityThresholds = typeof ELIGIBILITY_CONFIG.thresholds;
 
 /** Type for social configuration */
 export type SocialConfig = typeof ELIGIBILITY_CONFIG.social;
+
+/** Type for share configuration */
+export type ShareConfig = typeof ELIGIBILITY_CONFIG.share;

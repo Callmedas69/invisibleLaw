@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 interface SocialFollowCardProps {
   platform: "x" | "farcaster";
   username: string;
@@ -12,6 +10,10 @@ interface SocialFollowCardProps {
   isLoading?: boolean;
   /** For X platform - callback when user confirms follow */
   onConfirmFollow?: () => void;
+  /** For X platform - whether follow link was clicked */
+  hasClickedFollow?: boolean;
+  /** For X platform - callback when follow link is clicked */
+  onFollowClick?: () => void;
 }
 
 const PLATFORM_INFO = {
@@ -52,8 +54,9 @@ export function SocialFollowCard({
   error,
   isLoading = false,
   onConfirmFollow,
+  hasClickedFollow = false,
+  onFollowClick,
 }: SocialFollowCardProps) {
-  const [hasClickedFollow, setHasClickedFollow] = useState(false);
   const info = PLATFORM_INFO[platform];
   const isX = platform === "x";
 
@@ -94,7 +97,7 @@ export function SocialFollowCard({
             href={profileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setHasClickedFollow(true)}
+            onClick={() => onFollowClick?.()}
             className="px-3 py-2 text-sm text-center min-h-[40px] flex items-center justify-center border border-foreground/20 hover:bg-foreground/5 transition-colors"
           >
             Follow

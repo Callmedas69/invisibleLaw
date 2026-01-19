@@ -37,7 +37,7 @@ export function QuantityPicker({
         type="button"
         onClick={handleDecrement}
         disabled={!canDecrement}
-        className="w-12 h-12 sm:w-11 sm:h-11 flex items-center justify-center border border-foreground/20
+        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center border border-foreground/20
                    hover:border-foreground/40 active:bg-foreground/5 disabled:opacity-30 disabled:cursor-not-allowed
                    focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2
                    transition-colors text-xl sm:text-lg font-mono"
@@ -48,7 +48,7 @@ export function QuantityPicker({
 
       {/* Value display */}
       <span
-        className="w-10 sm:w-8 text-center text-2xl sm:text-xl font-mono tabular-nums"
+        className="w-8 sm:w-10 text-center text-xl sm:text-2xl font-mono tabular-nums"
         aria-live="polite"
         aria-atomic="true"
       >
@@ -60,7 +60,7 @@ export function QuantityPicker({
         type="button"
         onClick={handleIncrement}
         disabled={!canIncrement}
-        className="w-12 h-12 sm:w-11 sm:h-11 flex items-center justify-center border border-foreground/20
+        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center border border-foreground/20
                    hover:border-foreground/40 active:bg-foreground/5 disabled:opacity-30 disabled:cursor-not-allowed
                    focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2
                    transition-colors text-xl sm:text-lg font-mono"

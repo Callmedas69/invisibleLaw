@@ -16,8 +16,8 @@ import {
   fetchNeynarUserByAddress,
   fetchNeynarUserByFid,
   checkNeynarFollowStatus,
+  fetchCastByHash,
 } from "@/app/lib/repositories/neynar-repository";
-import { fetchQuotientEligibility } from "@/app/lib/repositories/quotient-repository";
 import {
   isAllowlisted,
   addAddressToAllowlist,
@@ -29,7 +29,7 @@ import {
 
 /** Individual score check result */
 export interface ScoreCheckResult {
-  provider: "ethos" | "neynar" | "quotient";
+  provider: "ethos" | "neynar";
   score: number | null;
   threshold: number;
   passes: boolean;
@@ -43,6 +43,17 @@ export interface SocialCheckResult {
   profileUrl: string;
   isFollowing: boolean;
   /** For X, this is self-declared. For Farcaster, it's verified via API */
+  verified: boolean;
+  error: string | null;
+}
+
+/** Share check result */
+export interface ShareCheckResult {
+  /** Business decision: did they share? */
+  hasShared: boolean;
+  /** The hash that was verified */
+  castHash: string | null;
+  /** Was the cast verified via API? */
   verified: boolean;
   error: string | null;
 }
@@ -71,7 +82,11 @@ export interface EligibilityResult {
   social: SocialCheckResult[];
   /** Whether all social requirements pass (business rule: need BOTH) */
   passesSocialRequirement: boolean;
-  /** Overall eligibility (scores AND social) */
+  /** Share check result */
+  share: ShareCheckResult;
+  /** Whether share requirement passes */
+  passesShareRequirement: boolean;
+  /** Overall eligibility (scores AND social AND share) */
   isEligible: boolean;
 }
 
@@ -105,15 +120,6 @@ function evaluateNeynarScore(score: number | null): boolean {
   return score >= ELIGIBILITY_CONFIG.thresholds.neynar;
 }
 
-/**
- * Evaluates if a Quotient score passes the threshold.
- * Business rule: score >= 0.6
- */
-function evaluateQuotientScore(score: number | null): boolean {
-  if (score === null) return false;
-  return score >= ELIGIBILITY_CONFIG.thresholds.quotient;
-}
-
 // ============================================================================
 // Main Service Functions
 // ============================================================================
@@ -124,18 +130,21 @@ export interface CheckEligibilityOptions {
   xFollowConfirmed?: boolean;
   /** Optional FID from miniapp context (skips address lookup) */
   fid?: number;
+  /** Cast hash to verify share requirement */
+  shareHash?: string;
 }
 
 /**
  * Checks eligibility for a wallet address.
  *
  * Business rules:
- * 1. Score requirement: Pass AT LEAST ONE of (Ethos >= 1300, Neynar >= 0.7, Quotient >= 0.6)
+ * 1. Score requirement: Pass AT LEAST ONE of (Ethos >= 1300, Neynar >= 0.7)
  * 2. Social requirement: Follow BOTH X account AND Farcaster account
- * 3. Overall eligibility: Score requirement AND Social requirement must both pass
+ * 3. Share requirement: Must share the miniapp on Farcaster
+ * 4. Overall eligibility: Score AND Social AND Share requirements must all pass
  *
  * @param address - Ethereum wallet address
- * @param options - Optional parameters including xFollowConfirmed and fid
+ * @param options - Optional parameters including xFollowConfirmed, fid, and shareHash
  * @returns Complete eligibility result
  */
 export async function checkEligibility(
@@ -145,7 +154,7 @@ export async function checkEligibility(
   // Support legacy boolean signature for backwards compatibility
   const opts: CheckEligibilityOptions =
     typeof options === "boolean" ? { xFollowConfirmed: options } : options;
-  const { xFollowConfirmed = false, fid } = opts;
+  const { xFollowConfirmed = false, fid, shareHash } = opts;
 
   const normalizedAddress = address.toLowerCase();
 
@@ -196,23 +205,7 @@ export async function checkEligibility(
     });
 
     // -------------------------------------------------------------------------
-    // Step 3: Fetch Quotient eligibility (requires FID)
-    // -------------------------------------------------------------------------
-    const quotientResult = await fetchQuotientEligibility(
-      neynarUser.fid,
-      ELIGIBILITY_CONFIG.quotient.queryId
-    );
-    const quotientScore = quotientResult?.score ?? null;
-    scores.push({
-      provider: "quotient",
-      score: quotientScore,
-      threshold: ELIGIBILITY_CONFIG.thresholds.quotient,
-      passes: evaluateQuotientScore(quotientScore),
-      error: quotientResult === null ? "Could not fetch Quotient score" : null,
-    });
-
-    // -------------------------------------------------------------------------
-    // Step 4: Check Farcaster follow status (requires FID)
+    // Step 3: Check Farcaster follow status (requires FID)
     // -------------------------------------------------------------------------
     const targetFid = ELIGIBILITY_CONFIG.social.farcaster.fid;
     let fcFollowing = false;
@@ -241,19 +234,11 @@ export async function checkEligibility(
       error: fcError,
     });
   } else {
-    // No Farcaster account - add placeholder scores
+    // No Farcaster account - add placeholder score
     scores.push({
       provider: "neynar",
       score: null,
       threshold: ELIGIBILITY_CONFIG.thresholds.neynar,
-      passes: false,
-      error: "No Farcaster account linked to this wallet",
-    });
-
-    scores.push({
-      provider: "quotient",
-      score: null,
-      threshold: ELIGIBILITY_CONFIG.thresholds.quotient,
       passes: false,
       error: "No Farcaster account linked to this wallet",
     });
@@ -269,7 +254,7 @@ export async function checkEligibility(
   }
 
   // -------------------------------------------------------------------------
-  // Step 5: X follow (self-declared, no API verification)
+  // Step 4: X follow (self-declared, no API verification)
   // -------------------------------------------------------------------------
   social.push({
     platform: "x",
@@ -281,6 +266,30 @@ export async function checkEligibility(
   });
 
   // -------------------------------------------------------------------------
+  // Step 5: Verify share (if hash provided)
+  // -------------------------------------------------------------------------
+  let share: ShareCheckResult;
+  if (shareHash) {
+    const castData = await fetchCastByHash(shareHash);
+    // Business rule: cast must exist and be from this user's FID
+    const isValid =
+      castData !== null && castData.authorFid === farcasterUser?.fid;
+    share = {
+      hasShared: isValid,
+      castHash: shareHash,
+      verified: isValid,
+      error: castData === null ? "Cast not found or deleted" : null,
+    };
+  } else {
+    share = {
+      hasShared: false,
+      castHash: null,
+      verified: false,
+      error: null,
+    };
+  }
+
+  // -------------------------------------------------------------------------
   // Business Rule Evaluation
   // -------------------------------------------------------------------------
 
@@ -290,8 +299,12 @@ export async function checkEligibility(
   // Social requirement: ALL social checks must pass
   const passesSocialRequirement = social.every((s) => s.isFollowing);
 
-  // Overall eligibility
-  const isEligible = passesScoreRequirement && passesSocialRequirement;
+  // Share requirement: Must have shared
+  const passesShareRequirement = share.hasShared;
+
+  // Overall eligibility: all three requirements must pass
+  const isEligible =
+    passesScoreRequirement && passesSocialRequirement && passesShareRequirement;
 
   return {
     address: normalizedAddress,
@@ -301,6 +314,8 @@ export async function checkEligibility(
     passesScoreRequirement,
     social,
     passesSocialRequirement,
+    share,
+    passesShareRequirement,
     isEligible,
   };
 }
@@ -311,6 +326,8 @@ export interface AddToAllowlistOptions {
   xFollowConfirmed: boolean;
   /** Optional FID from miniapp context */
   fid?: number;
+  /** Cast hash to verify share requirement */
+  shareHash?: string;
 }
 
 /**
@@ -329,7 +346,7 @@ export async function addToAllowlistIfEligible(
   // Support legacy boolean signature for backwards compatibility
   const opts: AddToAllowlistOptions =
     typeof options === "boolean" ? { xFollowConfirmed: options } : options;
-  const { xFollowConfirmed, fid } = opts;
+  const { xFollowConfirmed, fid, shareHash } = opts;
 
   const normalizedAddress = address.toLowerCase();
 
@@ -347,6 +364,7 @@ export async function addToAllowlistIfEligible(
   const eligibility = await checkEligibility(normalizedAddress, {
     xFollowConfirmed,
     fid,
+    shareHash,
   });
 
   // Get FID from eligibility result (more reliable than passed fid)

@@ -207,9 +207,9 @@ export function MintSuccessModal({
         </button>
 
         {/* Content */}
-        <div className="p-6 pt-12 text-center">
+        <div className="p-4 sm:p-6 pt-10 sm:pt-12 text-center">
           {/* Success Icon */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-3 sm:mb-4">
             <div className="w-12 h-12 rounded-full bg-green-600/10 flex items-center justify-center">
               <svg
                 className="w-6 h-6 text-green-600"
@@ -236,13 +236,13 @@ export function MintSuccessModal({
           </h2>
 
           {/* Quantity */}
-          <p className="text-foreground/70 mb-6">
+          <p className="text-foreground/70 mb-4 sm:mb-6">
             You minted {quantity} NFT{quantity > 1 ? "s" : ""}
           </p>
 
           {/* Transaction Hash */}
           {txHash && (
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <p className="text-xs text-foreground/50 uppercase tracking-wide mb-2">
                 Transaction
               </p>
@@ -291,7 +291,7 @@ export function MintSuccessModal({
           )}
 
           {/* Action Links */}
-          <div className="flex flex-col gap-3 mb-6">
+          <div className="flex flex-col gap-3 mb-4 sm:mb-6">
             {txHash && (
               <a
                 href={`${BASESCAN_TX_URL}/${txHash}`}

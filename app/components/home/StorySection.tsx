@@ -67,7 +67,7 @@ export function StorySection({
     >
       <div
         ref={contentRef}
-        className="max-w-4xl mx-auto w-full max-h-full overflow-y-auto py-16"
+        className="max-w-4xl mx-auto w-full py-8 sm:py-16"
       >
         {children}
       </div>

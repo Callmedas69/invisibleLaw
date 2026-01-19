@@ -41,5 +41,8 @@ export function useMiniApp() {
 
     /** Prompt to add miniapp to home screen (no-op in web mode) */
     addMiniApp: context.addMiniApp,
+
+    /** Open composer to create a cast, returns cast hash (null in web mode) */
+    composeCast: context.composeCast,
   };
 }

@@ -3,25 +3,33 @@
 import { useAccount } from "wagmi";
 import Link from "next/link";
 import { useEligibility } from "@/app/hooks/useEligibility";
+import { useMiniApp } from "@/app/hooks/useMiniApp";
 import { ScoreCard } from "./ScoreCard";
 import { SocialFollowCard } from "./SocialFollowCard";
+import { ShareCard } from "./ShareCard";
 import { CustomConnectButton } from "@/app/components/ui/CustomConnectButton";
 
 export function EligibilityChecker() {
   const { isConnected } = useAccount();
+  const { isMiniApp } = useMiniApp();
   const {
     scores,
     social,
+    share,
     farcasterUser,
     passesScoreRequirement,
     passesSocialRequirement,
+    passesShareRequirement,
     isEligible,
     isAlreadyAllowlisted,
     xFollowConfirmed,
+    hasClickedXFollow,
     isLoading,
     isAdding,
     error,
     confirmXFollow,
+    markXFollowClicked,
+    shareCast,
     addToAllowlist,
   } = useEligibility();
 
@@ -76,9 +84,9 @@ export function EligibilityChecker() {
 
   return (
     <div className="space-y-4 sm:space-y-8">
-      {/* Farcaster user info */}
+      {/* Farcaster user info - hidden on mobile and in miniapps */}
       {farcasterUser && (
-        <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 border border-foreground/20">
+        <div className={`${isMiniApp ? 'hidden' : 'hidden sm:flex'} items-center gap-2 sm:gap-3 p-3 sm:p-4 border border-foreground/20`}>
           {farcasterUser.pfpUrl && (
             <img
               src={farcasterUser.pfpUrl}
@@ -156,6 +164,8 @@ export function EligibilityChecker() {
               error={xSocial.error}
               isLoading={isLoading}
               onConfirmFollow={confirmXFollow}
+              hasClickedFollow={hasClickedXFollow}
+              onFollowClick={markXFollowClicked}
             />
           )}
 
@@ -182,6 +192,35 @@ export function EligibilityChecker() {
           {passesSocialRequirement
             ? "Social requirement met"
             : "Social requirement not met"}
+        </div>
+      </section>
+
+      {/* Share Requirement Section */}
+      <section className="space-y-2 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
+          <h2 className="font-serif text-lg">Share Requirement</h2>
+          <span className="text-sm text-foreground/50">
+            Must share to pass
+          </span>
+        </div>
+
+        <ShareCard
+          hasShared={share?.hasShared ?? false}
+          verified={share?.verified ?? false}
+          error={share?.error ?? null}
+          isLoading={isLoading}
+          onShare={shareCast}
+        />
+
+        {/* Share requirement status */}
+        <div
+          className={`text-sm font-medium ${
+            passesShareRequirement ? "text-green-600" : "text-foreground/50"
+          }`}
+        >
+          {passesShareRequirement
+            ? "Share requirement met"
+            : "Share requirement not met"}
         </div>
       </section>
 
