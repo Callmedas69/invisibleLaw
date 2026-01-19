@@ -1,17 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { sdk } from "@farcaster/miniapp-sdk";
 import { DrawerNav } from "@/app/components/layout/DrawerNav";
 import { MintBackground } from "@/app/components/mint/MintBackground";
 import { EligibilityChecker } from "@/app/components/eligibility/EligibilityChecker";
 
 export default function EligibilityPage() {
-  // Signal to Farcaster that the app is ready to display
-  useEffect(() => {
-    sdk.actions.ready();
-  }, []);
-
   return (
     <>
       <DrawerNav />

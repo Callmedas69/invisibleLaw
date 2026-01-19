@@ -1,29 +1,8 @@
-Error: <svg> attribute width: Expected length, "small".
-tt @ index-DkYC4LQK.js:28
-Dr @ index-DkYC4LQK.js:29
-on @ index-DkYC4LQK.js:29
-Zp @ index-DkYC4LQK.js:28
-so @ index-DkYC4LQK.js:28
-rf @ index-DkYC4LQK.js:28
-th @ index-DkYC4LQK.js:28
-Jc @ index-DkYC4LQK.js:28
-Xd @ index-DkYC4LQK.js:28
-ff @ index-DkYC4LQK.js:28
-ds @ index-DkYC4LQK.js:28
-lh @ index-DkYC4LQK.js:28
-(anonymous) @ index-DkYC4LQK.js:28Understand this error
-index-DkYC4LQK.js:28 Error: <svg> attribute height: Expected length, "small".
-tt @ index-DkYC4LQK.js:28
-Dr @ index-DkYC4LQK.js:29
-on @ index-DkYC4LQK.js:29
-Zp @ index-DkYC4LQK.js:28
-so @ index-DkYC4LQK.js:28
-rf @ index-DkYC4LQK.js:28
-th @ index-DkYC4LQK.js:28
-Jc @ index-DkYC4LQK.js:28
-Xd @ index-DkYC4LQK.js:28
-ff @ index-DkYC4LQK.js:28
-ds @ index-DkYC4LQK.js:28
-lh @ index-DkYC4LQK.js:28
-(anonymous) @ index-DkYC4LQK.js:28Understand this error
-Framing 'https://invisiblelaw.geoart.studio/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://*.farcaster.xyz https://warpcast.com". The request has been blocked.
+3:23:46 PM [log] [APPLY] {"id":"efcf66121c339-15fed5f8420be0-e7a35910e8acb-17363bc4a9c113","type":"APPLY","path":["eip6963RequestProvider"],"argumentList":[]}
+3:23:46 PM [log] [APPLY] {"id":"13a3a7b2af520-22d7bf4caccfa-12ba4623ae075d-3a4a264eb4001","type":"APPLY","path":["eip6963RequestProvider"],"argumentList":[]}
+3:23:46 PM [log] [GET] {"id":"bfe62ca11fd8a-2d27806a78d87-1a56ac7704dd21-d2ed6d575338e","type":"GET","path":["context"]}
+3:23:46 PM [log] [GET] {"id":"1804b9c1d913b6-9b14be24ac14b-1b206e0ed769d8-7f332aef7cfa2","type":"GET","path":["context"]}
+3:23:46 PM [log] [APPLY] {"id":"198f99a5770d-1aef057990c930-45a84c509dae9-1d75f448111823","type":"APPLY","path":["ethProviderRequestV2"],"argumentList":[{"type":"RAW","value":{"id":0,"method":"eth_accounts","jsonrpc":"2.0"}}]}
+3:23:46 PM [log] [APPLY] {"id":"5e55a6573e829-156ee8460313dc-16d22eafb2c5ce-d57d0782ea68a","type":"APPLY","path":["ethProviderRequestV2"],"argumentList":[{"type":"RAW","value":{"id":1,"method":"eth_requestAccounts","jsonrpc":"2.0"}}]}
+3:23:46 PM [log] [APPLY] {"id":"488f9db5ad99b-fc99651331f12-a31ed01e6c9b5-1b3fd2f28cea4","type":"APPLY","path":["ethProviderRequestV2"],"argumentList":[{"type":"RAW","value":{"id":2,"method":"eth_chainId","jsonrpc":"2.0"}}]}
+3:23:46 PM [log] [rabby-dapp-iframe-sync-url] {"type":"rabby-dapp-iframe-sync-url","token":null,"payload":{"url":"https://invisiblelaw.geoart.studio/eligibility"}}

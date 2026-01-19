@@ -73,7 +73,15 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
           if (miniAppContext) {
             setContext(miniAppContext as MiniAppContextData);
           }
-          // Note: sdk.actions.ready() is called by individual pages when their UI is mounted
+
+          // Dismiss splash screen - centralized here to ensure proper SDK state
+          try {
+            await sdk.actions.ready();
+            console.log("[MiniAppContext] ready() called successfully");
+          } catch (error) {
+            console.error("[MiniAppContext] Failed to call ready():", error);
+          }
+
           setIsReady(true);
         }
       } catch (error) {

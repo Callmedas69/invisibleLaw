@@ -13,27 +13,25 @@ const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [isMiniApp, setIsMiniApp] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [isDetected, setIsDetected] = useState(false);
 
   // Detect miniapp mode on mount
   useEffect(() => {
     const detectMiniApp = async () => {
       const inMiniApp = await sdk.isInMiniApp();
       setIsMiniApp(inMiniApp);
-      setIsHydrated(true);
+      setIsDetected(true);
     };
     detectMiniApp();
   }, []);
 
-  // Wait for hydration to prevent mismatch
-  if (!isHydrated) {
-    return null;
-  }
+  // Use webConfig as default, switch to miniappConfig once detected as miniapp
+  const config = isDetected && isMiniApp ? miniappConfig : webConfig;
 
-  // Miniapp mode: Use Farcaster connector, no RainbowKit
-  if (isMiniApp) {
+  // Miniapp mode or still detecting: skip RainbowKit to allow SDK communication
+  if (isMiniApp || !isDetected) {
     return (
-      <WagmiProvider config={miniappConfig}>
+      <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
           <MiniAppProvider>
             {children}
@@ -43,7 +41,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Web mode: Standard RainbowKit setup
+  // Web mode confirmed: Standard RainbowKit setup
   return (
     <WagmiProvider config={webConfig}>
       <QueryClientProvider client={queryClient}>

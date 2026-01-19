@@ -1,16 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { sdk } from "@farcaster/miniapp-sdk";
 import { DrawerNav } from "@/app/components/layout/DrawerNav";
 import { MintSection } from "@/app/components/mint/MintSection";
 import { MintBackground } from "@/app/components/mint/MintBackground";
 
 export default function MintPage() {
-  // Signal to Farcaster that the app is ready to display
-  useEffect(() => {
-    sdk.actions.ready();
-  }, []);
   return (
     <>
       <DrawerNav />
