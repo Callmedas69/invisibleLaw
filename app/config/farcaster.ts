@@ -29,7 +29,6 @@ export const FARCASTER_CONFIG = {
     splashImageUrl: `${APP_URL}/splash-200x200.png`,
     heroImageUrl: `${APP_URL}/hero.png`,
     ogImageUrl: `${APP_URL}/og.png`,
-    webhookUrl: `${APP_URL}/api/miniapp/webhook`,
   },
 
   /** Splash screen configuration */
@@ -37,11 +36,14 @@ export const FARCASTER_CONFIG = {
     backgroundColor: "#ffffff",
   },
 
-  /** Account association (from env vars - signed via Warpcast) */
+  /**
+   * Account association (hardcoded - signed via Warpcast)
+   * To configure: Go to warpcast.com/miniapp, sign your domain, and update values here
+   */
   accountAssociation: {
-    header: process.env.FARCASTER_ACCOUNT_ASSOCIATION_HEADER || "",
-    payload: process.env.FARCASTER_ACCOUNT_ASSOCIATION_PAYLOAD || "",
-    signature: process.env.FARCASTER_ACCOUNT_ASSOCIATION_SIGNATURE || "",
+    header: "",
+    payload: "",
+    signature: "",
   },
 
   /** Check if account association is configured */

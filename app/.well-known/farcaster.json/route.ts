@@ -12,14 +12,14 @@ import { FARCASTER_CONFIG } from "@/app/config/farcaster";
  * - miniapp: App metadata for display in Warpcast
  */
 export async function GET() {
-  const { metadata, urls, splash, accountAssociation } = FARCASTER_CONFIG;
+  const { metadata, urls, splash } = FARCASTER_CONFIG;
 
   // Build the manifest per Farcaster spec
   const manifest = {
     accountAssociation: {
-      header: accountAssociation.header,
-      payload: accountAssociation.payload,
-      signature: accountAssociation.signature,
+      header: "",
+      payload: "",
+      signature: "",
     },
     miniapp: {
       version: "1", // Required field per Farcaster spec
@@ -32,7 +32,6 @@ export async function GET() {
       splashBackgroundColor: splash.backgroundColor,
       heroImageUrl: urls.heroImageUrl,
       ogImageUrl: urls.ogImageUrl,
-      webhookUrl: urls.webhookUrl,
       primaryCategory: metadata.primaryCategory,
       tags: metadata.tags,
     },

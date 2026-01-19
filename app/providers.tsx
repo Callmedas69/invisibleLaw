@@ -17,9 +17,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   // Detect miniapp mode on mount
   useEffect(() => {
-    const inMiniApp = sdk.isInMiniApp();
-    setIsMiniApp(inMiniApp);
-    setIsHydrated(true);
+    const detectMiniApp = async () => {
+      const inMiniApp = await sdk.isInMiniApp();
+      setIsMiniApp(inMiniApp);
+      setIsHydrated(true);
+    };
+    detectMiniApp();
   }, []);
 
   // Wait for hydration to prevent mismatch

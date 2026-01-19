@@ -33,7 +33,8 @@ import {
  * 6. Extended Lines with endpoints
  *
  * All positions governed by Φ (Golden Ratio)
- * All sizes from Fibonacci sequence
+ * All sizes governed by the Golden Ratio (φ)
+ * Fibonacci is not used as a source of scale
  */
 contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     using Strings for uint256;
@@ -41,6 +42,9 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     // =========================================================================
     // CONSTANTS
     // =========================================================================
+
+    uint256 private constant PHI_NUM = 1618;
+    uint256 private constant PHI_DEN = 1000;
 
     uint256 public constant MAX_SUPPLY = 1272;
     uint256 public constant MAX_PER_WALLET = 5;
@@ -145,7 +149,9 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
             bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
             if (MerkleProof.verify(proof, merkleRoot, leaf)) {
                 // Cap discount at quantity to prevent underflow
-                discount = allowlistFreeMint > quantity ? quantity : allowlistFreeMint;
+                discount = allowlistFreeMint > quantity
+                    ? quantity
+                    : allowlistFreeMint;
                 allowlistClaimed[msg.sender] = true;
             }
         }
@@ -540,15 +546,34 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     // =========================================================================
 
     function _genSpiral() internal pure returns (bytes memory) {
+        uint256 r0 = 360;
+
+        uint256 r1 = (r0 * PHI_DEN) / PHI_NUM;
+        uint256 r2 = (r1 * PHI_DEN) / PHI_NUM;
+        uint256 r3 = (r2 * PHI_DEN) / PHI_NUM;
+        uint256 r4 = (r3 * PHI_DEN) / PHI_NUM;
+        uint256 r5 = (r4 * PHI_DEN) / PHI_NUM;
+
         return
             abi.encodePacked(
-                '<circle cx="500" cy="500" r="360" fill="none" stroke="#1a1a1a" stroke-width="2"/>',
-                '<circle cx="500" cy="500" r="280" fill="none" stroke="#F9D56E" stroke-width="3"/>',
-                '<circle cx="500" cy="500" r="175" fill="none" stroke="#E8505B" stroke-width="2"/>',
-                '<circle cx="500" cy="500" r="110" fill="#14B1AB"/>',
-                '<circle cx="500" cy="500" r="65" fill="#F9D56E"/>',
-                '<circle cx="500" cy="500" r="40" fill="#1a1a1a"/>',
-                '<circle cx="500" cy="500" r="15" fill="#F3ECC2"/>'
+                '<circle cx="500" cy="500" r="',
+                r0.toString(),
+                '" fill="none" stroke="#1a1a1a" stroke-width="2"/>',
+                '<circle cx="500" cy="500" r="',
+                r1.toString(),
+                '" fill="none" stroke="#F9D56E" stroke-width="3"/>',
+                '<circle cx="500" cy="500" r="',
+                r2.toString(),
+                '" fill="none" stroke="#E8505B" stroke-width="2"/>',
+                '<circle cx="500" cy="500" r="',
+                r3.toString(),
+                '" fill="#14B1AB"/>',
+                '<circle cx="500" cy="500" r="',
+                r4.toString(),
+                '" fill="#F9D56E"/>',
+                '<circle cx="500" cy="500" r="',
+                r5.toString(),
+                '" fill="#1a1a1a"/>'
             );
     }
 
@@ -562,35 +587,26 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         bool staticMode
     ) internal pure returns (bytes memory) {
         bytes memory rects;
-        uint256 cellW = INNER_SIZE / 12;
-        uint256 cellH = INNER_SIZE / 12;
+        uint256 base = INNER_SIZE / 12;
 
         uint256 insideChance;
         uint256 outsideChance;
-        uint256 forcedColorIdx = 99;
 
-        // Visual parameters based on rarity tier
         if (rarity == Rarity.Chaos) {
-            // Chaos: High density, unique color scheme
-            insideChance = 90;
-            outsideChance = 50;
-            forcedColorIdx = (seed >> 200) % 7;
+            insideChance = 618;
+            outsideChance = 382;
         } else if (rarity == Rarity.Turbulence) {
-            // Turbulence: High density, dynamic
-            insideChance = 85;
-            outsideChance = 40;
+            insideChance = 600;
+            outsideChance = 370;
         } else if (rarity == Rarity.Emergence) {
-            // Emergence: Enhanced density
-            insideChance = 75;
-            outsideChance = 30;
+            insideChance = 580;
+            outsideChance = 360;
         } else if (rarity == Rarity.Clarity) {
-            // Clarity: Moderate density, structured
-            insideChance = 70;
-            outsideChance = 20;
+            insideChance = 560;
+            outsideChance = 350;
         } else {
-            // Harmony: Balanced generation
-            insideChance = 65;
-            outsideChance = 15;
+            insideChance = 550;
+            outsideChance = 340;
         }
 
         string[8] memory colors = [
@@ -606,96 +622,51 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
 
         for (uint256 row = 0; row < 12; row++) {
             for (uint256 col = 0; col < 12; col++) {
-                uint256 cellSeed = uint256(
+                uint256 s = uint256(
                     keccak256(abi.encodePacked(seed, row, col))
                 );
 
-                uint256 cx = INNER_START + col * cellW + cellW / 2;
-                uint256 cy = INNER_START + row * cellH + cellH / 2;
+                uint256 cx = INNER_START + col * base + base / 2;
+                uint256 cy = INNER_START + row * base + base / 2;
 
-                int256 dx = int256(cx) - 500;
-                int256 dy = int256(cy) - 500;
-                uint256 dist = _sqrt(uint256(dx * dx + dy * dy));
+                uint256 dist = _sqrt(
+                    uint256((int256(cx) - 500) ** 2 + (int256(cy) - 500) ** 2)
+                );
 
-                uint256 chance = dist < 340 ? insideChance : outsideChance;
+                uint256 chance = dist < 360 ? insideChance : outsideChance;
+                if (s % 1000 >= chance) continue;
 
-                if (cellSeed % 100 < chance) {
-                    uint256 sizeVar = (cellSeed >> 8) % 100;
-                    uint256 w;
-                    uint256 h;
+                bool vertical = (s & 1) == 0;
 
-                    if (sizeVar < 30) {
-                        w = (cellW * 60) / 100;
-                        h = (cellH * 60) / 100;
-                    } else if (sizeVar < 70) {
-                        w = (cellW * 90) / 100;
-                        h = (cellH * 90) / 100;
-                    } else if (sizeVar < 85) {
-                        w = (cellW * 180) / 100;
-                        h = (cellH * 70) / 100;
-                    } else {
-                        w = (cellW * 70) / 100;
-                        h = (cellH * 180) / 100;
-                    }
+                uint256 w = vertical ? base : (base * PHI_NUM) / PHI_DEN;
+                uint256 h = vertical ? (base * PHI_NUM) / PHI_DEN : base;
 
-                    uint256 x = cx - w / 2;
-                    uint256 y = cy - h / 2;
+                uint256 x = cx - w / 2;
+                uint256 y = cy - h / 2;
 
-                    string memory color;
-                    if (forcedColorIdx < 8) {
-                        color = colors[forcedColorIdx];
-                    } else if (forcedColorIdx == 100) {
-                        uint256[3] memory warm = [uint256(0), 1, 5];
-                        color = colors[warm[(cellSeed >> 16) % 3]];
-                    } else if (forcedColorIdx == 101) {
-                        uint256[3] memory cool = [uint256(3), 4, 6];
-                        color = colors[cool[(cellSeed >> 16) % 3]];
-                    } else {
-                        color = colors[(cellSeed >> 16) % 8];
-                    }
+                string memory color = colors[(s >> 8) % 8];
 
-                    if (staticMode) {
-                        rects = abi.encodePacked(
-                            rects,
-                            '<rect x="',
-                            x.toString(),
-                            '" y="',
-                            y.toString(),
-                            '" width="',
-                            w.toString(),
-                            '" height="',
-                            h.toString(),
-                            '" fill="',
-                            color,
-                            '"/>'
-                        );
-                    } else {
-                        rects = abi.encodePacked(
-                            rects,
-                            '<rect class="d',
-                            ((cellSeed % 8) + 1).toString(),
-                            '" x="',
-                            x.toString(),
-                            '" y="',
-                            y.toString(),
-                            '" width="',
-                            w.toString(),
-                            '" height="',
-                            h.toString(),
-                            '" fill="',
-                            color,
-                            '"/>'
-                        );
-                    }
-                }
+                rects = abi.encodePacked(
+                    rects,
+                    '<rect x="',
+                    x.toString(),
+                    '" y="',
+                    y.toString(),
+                    '" width="',
+                    w.toString(),
+                    '" height="',
+                    h.toString(),
+                    '" fill="',
+                    color,
+                    staticMode ? '"/>' : '" class="d1"/>'
+                );
             }
         }
-
         return rects;
     }
 
     // =========================================================================
-    // LAYER 4: DOTS AT INTERSECTIONS
+    // LAYER 4: DOTS AT Φ INTERSECTIONS (φ-COMPLIANT)
     // =========================================================================
 
     function _genDots(
@@ -704,22 +675,23 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         bool staticMode
     ) internal pure returns (bytes memory) {
         bytes memory dots;
+
         uint16[9] memory grid = [0, 146, 236, 382, 500, 618, 764, 854, 1000];
-        uint8[6] memory fib = [10, 15, 25, 40, 65, 110];
+
+        uint256 base = INNER_SIZE / 12;
+        uint256 r = (base * PHI_DEN) / PHI_NUM; // base / φ
 
         uint256 dotChance;
-        // Dot density based on rarity tier
         if (rarity == Rarity.Chaos) {
-            dotChance = 70;
+            dotChance = 700; // 70.0%
         } else if (rarity == Rarity.Turbulence) {
-            dotChance = 55;
+            dotChance = 550;
         } else if (rarity == Rarity.Emergence) {
-            dotChance = 40;
+            dotChance = 400;
         } else if (rarity == Rarity.Clarity) {
-            dotChance = 35;
+            dotChance = 350;
         } else {
-            // Harmony
-            dotChance = 25;
+            dotChance = 250; // Harmony
         }
 
         string[8] memory colors = [
@@ -735,50 +707,33 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
 
         for (uint256 i = 0; i < 9; i++) {
             for (uint256 j = 0; j < 9; j++) {
-                uint256 dotSeed = uint256(
+                uint256 s = uint256(
                     keccak256(abi.encodePacked(seed, i, j, uint256(5000)))
                 );
 
-                if (dotSeed % 100 < dotChance) {
-                    uint256 x = INNER_START + (INNER_SIZE * grid[i]) / 1000;
-                    uint256 y = INNER_START + (INNER_SIZE * grid[j]) / 1000;
+                if (s % 1000 >= dotChance) continue;
 
-                    uint256 r = fib[(dotSeed >> 8) % 3];
+                uint256 x = INNER_START + (INNER_SIZE * grid[i]) / 1000;
+                uint256 y = INNER_START + (INNER_SIZE * grid[j]) / 1000;
 
-                    string memory color = (dotSeed >> 16) % 100 < 70
-                        ? "#1a1a1a"
-                        : colors[(dotSeed >> 24) % 8];
+                string memory color = ((s >> 16) % 100 < 70)
+                    ? "#1a1a1a"
+                    : colors[(s >> 24) % 8];
 
-                    if (staticMode) {
-                        dots = abi.encodePacked(
-                            dots,
-                            '<circle cx="',
-                            x.toString(),
-                            '" cy="',
-                            y.toString(),
-                            '" r="',
-                            r.toString(),
-                            '" fill="',
-                            color,
-                            '"/>'
-                        );
-                    } else {
-                        dots = abi.encodePacked(
-                            dots,
-                            '<circle class="d',
-                            ((dotSeed % 8) + 1).toString(),
-                            '" cx="',
-                            x.toString(),
-                            '" cy="',
-                            y.toString(),
-                            '" r="',
-                            r.toString(),
-                            '" fill="',
-                            color,
-                            '"/>'
-                        );
-                    }
-                }
+                dots = abi.encodePacked(
+                    dots,
+                    "<circle",
+                    staticMode ? "" : ' class="d1"',
+                    ' cx="',
+                    x.toString(),
+                    '" cy="',
+                    y.toString(),
+                    '" r="',
+                    r.toString(),
+                    '" fill="',
+                    color,
+                    '"/>'
+                );
             }
         }
 
@@ -786,7 +741,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
     }
 
     // =========================================================================
-    // LAYER 5: CONCENTRIC CIRCLES
+    // LAYER 5: CONCENTRIC CIRCLES (φ-COMPLIANT)
     // =========================================================================
 
     function _genRings(
@@ -795,11 +750,12 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         bool staticMode
     ) internal pure returns (bytes memory) {
         bytes memory rings;
+
         uint16[9] memory grid = [0, 146, 236, 382, 500, 618, 764, 854, 1000];
-        uint8[6] memory fib = [10, 15, 25, 40, 65, 110];
+
+        uint256 base = INNER_SIZE / 12;
 
         uint256 numGroups;
-        // Ring groups based on rarity tier
         if (rarity == Rarity.Chaos) {
             numGroups = 6 + ((seed >> 100) % 3);
         } else if (rarity == Rarity.Turbulence) {
@@ -809,7 +765,6 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         } else if (rarity == Rarity.Clarity) {
             numGroups = 3 + ((seed >> 100) % 2);
         } else {
-            // Harmony
             numGroups = 2 + ((seed >> 100) % 3);
         }
 
@@ -825,80 +780,54 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         ];
 
         for (uint256 g = 0; g < numGroups; g++) {
-            uint256 gSeed = uint256(
+            uint256 s = uint256(
                 keccak256(abi.encodePacked(seed, g, uint256(8000)))
             );
 
-            uint256 posI = gSeed % 9;
-            uint256 posJ = (gSeed >> 8) % 9;
-            uint256 cx = INNER_START + (INNER_SIZE * grid[posI]) / 1000;
-            uint256 cy = INNER_START + (INNER_SIZE * grid[posJ]) / 1000;
+            uint256 cx = INNER_START + (INNER_SIZE * grid[s % 9]) / 1000;
+            uint256 cy = INNER_START + (INNER_SIZE * grid[(s >> 8) % 9]) / 1000;
 
-            uint256 outerR = fib[3 + ((gSeed >> 16) % 3)];
+            // φ-governed radii
+            uint256 outerR = (base * PHI_NUM) / PHI_DEN; // φ · base
+            uint256 innerR = (outerR * PHI_DEN) / PHI_NUM; // base
+            uint256 coreR = (innerR * PHI_DEN) / PHI_NUM; // base / φ
 
-            string memory c1 = colors[(gSeed >> 24) % 8];
-            if (staticMode) {
-                rings = abi.encodePacked(
-                    rings,
-                    '<circle cx="',
-                    cx.toString(),
-                    '" cy="',
-                    cy.toString(),
-                    '" r="',
-                    outerR.toString(),
-                    '" fill="none" stroke="',
-                    c1,
-                    '" stroke-width="2"/>'
-                );
-            } else {
-                rings = abi.encodePacked(
-                    rings,
-                    '<circle class="d',
-                    ((gSeed % 8) + 1).toString(),
-                    '" cx="',
-                    cx.toString(),
-                    '" cy="',
-                    cy.toString(),
-                    '" r="',
-                    outerR.toString(),
-                    '" fill="none" stroke="',
-                    c1,
-                    '" stroke-width="2"/>'
-                );
-            }
+            string memory c1 = colors[(s >> 24) % 8];
+            string memory c2 = colors[(s >> 32) % 8];
 
-            uint256 innerR = (outerR * 60) / 100;
-            string memory c2 = colors[(gSeed >> 32) % 8];
-            if (staticMode) {
-                rings = abi.encodePacked(
-                    rings,
-                    '<circle cx="',
-                    cx.toString(),
-                    '" cy="',
-                    cy.toString(),
-                    '" r="',
-                    innerR.toString(),
-                    '" fill="',
-                    c2,
-                    '"/>'
-                );
-            } else {
-                rings = abi.encodePacked(
-                    rings,
-                    '<circle class="d',
-                    (((gSeed >> 4) % 8) + 1).toString(),
-                    '" cx="',
-                    cx.toString(),
-                    '" cy="',
-                    cy.toString(),
-                    '" r="',
-                    innerR.toString(),
-                    '" fill="',
-                    c2,
-                    '"/>'
-                );
-            }
+            // Outer ring
+            rings = abi.encodePacked(
+                rings,
+                "<circle",
+                staticMode ? "" : ' class="d1"',
+                ' cx="',
+                cx.toString(),
+                '" cy="',
+                cy.toString(),
+                '" r="',
+                outerR.toString(),
+                '" fill="none" stroke="',
+                c1,
+                '" stroke-width="2"/>'
+            );
 
+            // Inner filled ring
+            rings = abi.encodePacked(
+                rings,
+                "<circle",
+                staticMode ? "" : ' class="d2"',
+                ' cx="',
+                cx.toString(),
+                '" cy="',
+                cy.toString(),
+                '" r="',
+                innerR.toString(),
+                '" fill="',
+                c2,
+                '"/>'
+            );
+
+            // Core dot (φ-reduced)
             rings = abi.encodePacked(
                 rings,
                 '<circle cx="',
@@ -906,7 +835,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
                 '" cy="',
                 cy.toString(),
                 '" r="',
-                uint256(fib[1]).toString(),
+                coreR.toString(),
                 '" fill="#1a1a1a"/>'
             );
         }
@@ -923,47 +852,43 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
         Rarity rarity
     ) internal pure returns (bytes memory) {
         bytes memory lines;
+
         uint16[9] memory grid = [0, 146, 236, 382, 500, 618, 764, 854, 1000];
-        uint8[6] memory fib = [10, 15, 25, 40, 65, 110];
+
+        // φ-derived boundaries
+        uint256 minEdge = INNER_START;
+        uint256 maxEdge = INNER_START + INNER_SIZE;
+        uint256 phiEdge = INNER_START + (INNER_SIZE * 618) / 1000;
+        uint256 invPhiEdge = INNER_START + (INNER_SIZE * 382) / 1000;
+
+        uint256[4] memory edges = [minEdge, invPhiEdge, phiEdge, maxEdge];
 
         uint256 numLines;
-        // Extended lines based on rarity tier
-        if (rarity == Rarity.Chaos) {
-            numLines = 10 + ((seed >> 110) % 4);
-        } else if (rarity == Rarity.Turbulence) {
+        if (rarity == Rarity.Chaos) numLines = 10 + ((seed >> 110) % 4);
+        else if (rarity == Rarity.Turbulence)
             numLines = 8 + ((seed >> 110) % 4);
-        } else if (rarity == Rarity.Emergence) {
-            numLines = 6 + ((seed >> 110) % 4);
-        } else if (rarity == Rarity.Clarity) {
-            numLines = 5 + ((seed >> 110) % 3);
-        } else {
-            // Harmony
-            numLines = 4 + ((seed >> 110) % 5);
-        }
+        else if (rarity == Rarity.Emergence) numLines = 6 + ((seed >> 110) % 4);
+        else if (rarity == Rarity.Clarity) numLines = 5 + ((seed >> 110) % 3);
+        else numLines = 4 + ((seed >> 110) % 5);
 
         for (uint256 l = 0; l < numLines; l++) {
-            uint256 lSeed = uint256(
+            uint256 s = uint256(
                 keccak256(abi.encodePacked(seed, l, uint256(9000)))
             );
 
-            uint256 posI = lSeed % 9;
-            uint256 posJ = (lSeed >> 8) % 9;
-            uint256 x1 = INNER_START + (INNER_SIZE * grid[posI]) / 1000;
-            uint256 y1 = INNER_START + (INNER_SIZE * grid[posJ]) / 1000;
+            uint256 x1 = INNER_START + (INNER_SIZE * grid[s % 9]) / 1000;
+            uint256 y1 = INNER_START + (INNER_SIZE * grid[(s >> 8) % 9]) / 1000;
 
-            bool isHoriz = (lSeed >> 16) % 2 == 0;
-            bool extendNeg = (lSeed >> 17) % 2 == 0;
+            bool horiz = (s >> 16) & 1 == 0;
 
-            uint256 x2;
-            uint256 y2;
+            uint256 edge = edges[(s >> 17) % 4];
 
-            if (isHoriz) {
-                x2 = extendNeg ? 50 : 950;
-                y2 = y1;
-            } else {
-                x2 = x1;
-                y2 = extendNeg ? 50 : 950;
-            }
+            uint256 x2 = horiz ? edge : x1;
+            uint256 y2 = horiz ? y1 : edge;
+
+            // φ-related endpoint dot radius
+            uint256 base = INNER_SIZE / 12;
+            uint256 dotR = (base * 1000) / 1618; // base / φ
 
             lines = abi.encodePacked(
                 lines,
@@ -975,12 +900,7 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
                 x2.toString(),
                 '" y2="',
                 y2.toString(),
-                '" stroke="#1a1a1a" stroke-width="1"/>'
-            );
-
-            uint256 dotR = fib[(lSeed >> 20) % 2];
-            lines = abi.encodePacked(
-                lines,
+                '" stroke="#1a1a1a" stroke-width="1"/>',
                 '<circle cx="',
                 x2.toString(),
                 '" cy="',
@@ -989,17 +909,6 @@ contract InvisibleLaw is ERC721A, ERC721AQueryable, ERC2981, Ownable, Pausable {
                 dotR.toString(),
                 '" fill="#1a1a1a"/>'
             );
-
-            if ((lSeed >> 24) % 100 < 40) {
-                lines = abi.encodePacked(
-                    lines,
-                    '<circle cx="',
-                    x1.toString(),
-                    '" cy="',
-                    y1.toString(),
-                    '" r="5" fill="#1a1a1a"/>'
-                );
-            }
         }
 
         return lines;

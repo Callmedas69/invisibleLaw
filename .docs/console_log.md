@@ -1,33 +1,11 @@
-## Error Type
-Build Error
-
-## Error Message
-Module not found: Can't resolve '@farcaster/miniapp-wagmi-connector'
-
-## Build Output
-./app/config/wagmi.ts:4:1
-Module not found: Can't resolve '@farcaster/miniapp-wagmi-connector'
-  2 | import { createConfig, http } from 'wagmi';
-  3 | import { base } from 'wagmi/chains';
-> 4 | import { farcasterFrame } from '@farcaster/miniapp-wagmi-connector';
-    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  5 |
-  6 | /**
-  7 |  * Web configuration - Standard RainbowKit setup
-
-Import traces:
-  Client Component Browser:
-    ./app/config/wagmi.ts [Client Component Browser]
-    ./app/providers.tsx [Client Component Browser]
-    ./app/providers.tsx [Server Component]
-    ./app/layout.tsx [Server Component]
-
-  Client Component SSR:
-    ./app/config/wagmi.ts [Client Component SSR]
-    ./app/providers.tsx [Client Component SSR]
-    ./app/providers.tsx [Server Component]
-    ./app/layout.tsx [Server Component]
-
-https://nextjs.org/docs/messages/module-not-found
-
-Next.js version: 16.1.1 (Turbopack)
+./app/context/MiniAppContext.tsx:68:22
+Type error: Argument of type 'Promise<boolean>' is not assignable to parameter of type 'SetStateAction<boolean>'.
+  66 |         // Check if we're inside a Farcaster miniapp
+  67 |         const inMiniApp = sdk.isInMiniApp();
+> 68 |         setIsMiniApp(inMiniApp);
+     |                      ^
+  69 |
+  70 |         if (inMiniApp) {
+  71 |           // Get the context (user info, etc.)
+Next.js build worker exited with code: 1 and signal: null
+Error: Command "npm run build" exited with 1

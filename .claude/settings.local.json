@@ -29,7 +29,9 @@
       "Bash(npm ls:*)",
       "Bash(npx eslint:*)",
       "Bash(npm search:*)",
-      "Bash(npm info:*)"
+      "Bash(npm info:*)",
+      "Bash(npx --yes next build:*)",
+      "Bash(NODE_ENV=production node:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

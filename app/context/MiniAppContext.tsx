@@ -64,7 +64,7 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
     const init = async () => {
       try {
         // Check if we're inside a Farcaster miniapp
-        const inMiniApp = sdk.isInMiniApp();
+        const inMiniApp = await sdk.isInMiniApp();
         setIsMiniApp(inMiniApp);
 
         if (inMiniApp) {
