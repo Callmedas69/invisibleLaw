@@ -24,7 +24,7 @@ function NavItem({ href, label, onClick }: NavItemProps) {
       data-nav-item
       className="group flex items-center justify-between py-6 sm:py-8 border-t border-foreground/20 opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
     >
-      <span className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-foreground transition-colors group-hover:text-foreground/70">
+      <span className="font-serif text-2xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-foreground transition-colors group-hover:text-foreground/70">
         {label}
       </span>
       <span className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-foreground/30 flex items-center justify-center transition-colors group-hover:bg-foreground group-hover:text-background">
@@ -189,7 +189,7 @@ export function DrawerNav() {
         ref={triggerRef}
         type="button"
         onClick={open}
-        className="fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 z-50 flex items-center justify-center w-12 h-12 hover:scale-105 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 drop-shadow-lg"
+        className="fixed top-[max(1rem,env(safe-area-inset-top))] right-[max(1rem,env(safe-area-inset-right))] sm:top-6 sm:right-6 md:top-8 md:right-8 z-50 flex items-center justify-center w-12 h-12 hover:scale-105 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 drop-shadow-lg"
         aria-label="Open menu"
       >
         {!logoFailed ? (
@@ -231,7 +231,7 @@ export function DrawerNav() {
             role="dialog"
             aria-modal="true"
             aria-label="Main navigation"
-            className="absolute inset-4 sm:inset-6 md:inset-8 bg-background border border-foreground/10 rounded-lg shadow-2xl flex flex-col opacity-0"
+            className="absolute inset-4 sm:inset-6 md:inset-8 bg-background border border-foreground/10 rounded-lg shadow-2xl flex flex-col opacity-0 pb-[max(1rem,env(safe-area-inset-bottom))]"
           >
             {/* Close Button - Top Right */}
             <div
@@ -241,7 +241,7 @@ export function DrawerNav() {
               <button
                 type="button"
                 onClick={close}
-                className="flex items-center gap-2 px-4 py-2 border border-foreground/20 rounded-full hover:bg-foreground hover:text-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
+                className="flex items-center gap-2 px-4 py-2 min-h-[44px] border border-foreground/20 rounded-full hover:bg-foreground hover:text-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
                 autoFocus
               >
                 <span className="text-sm font-medium tracking-wide">CLOSE</span>
@@ -250,7 +250,7 @@ export function DrawerNav() {
             </div>
 
             {/* Tagline - Centered Vertically */}
-            <div className="flex-1 flex items-center px-6 sm:px-8 md:px-10">
+            <div className="flex-1 min-h-0 flex items-center px-6 sm:px-8 md:px-10 overflow-hidden">
               <p
                 data-tagline
                 className="max-w-[320px] sm:max-w-lg md:max-w-2xl lg:max-w-4xl text-xl sm:text-4xl md:text-5xl lg:text-6xl text-foreground/80 leading-snug opacity-0 italic"
@@ -263,7 +263,7 @@ export function DrawerNav() {
             </div>
 
             {/* Navigation Links */}
-            <div className="px-6 sm:px-8 md:px-10 pb-6 sm:pb-8 md:pb-10">
+            <div className="px-6 sm:px-8 md:px-10 pb-6 sm:pb-8 md:pb-10 overflow-y-auto flex-shrink-0">
               <NavItem href="/" label="Home" onClick={close} />
               <NavItem href="/mint" label="Mint" onClick={close} />
               <NavItem href="/eligibility" label="Eligibility" onClick={close} />

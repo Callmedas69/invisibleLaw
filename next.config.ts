@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "frame-ancestors 'self' https://*.farcaster.xyz https://warpcast.com",
+              "frame-ancestors 'self' https://*.farcaster.xyz https://warpcast.com https://invisiblelaw.geoart.studio",
           },
         ],
       },
