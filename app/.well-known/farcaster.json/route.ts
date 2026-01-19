@@ -17,9 +17,9 @@ export async function GET() {
   // Build the manifest per Farcaster spec
   const manifest = {
     accountAssociation: {
-      header: "",
-      payload: "",
-      signature: "",
+      "header": "eyJmaWQiOjIyNDIwLCJ0eXBlIjoiYXV0aCIsImtleSI6IjB4ZGM0MWQ2REE2QmIyRDAyYjE5MzE2QjJiZkZGMENCYjQyNjA2NDg0ZCJ9",
+      "payload": "eyJkb21haW4iOiJpbnZpc2libGVsYXcuZ2VvYXJ0LnN0dWRpbyJ9",
+      "signature": "1KEA9q7OK5+u/fryJbHJCr3D//VbdBEtCAyJJ9JQeUZ4tem3AbHwDM35q3QLiN74TPVfxg/3sV8zwJkJ9VutNhs="
     },
     miniapp: {
       version: "1", // Required field per Farcaster spec
