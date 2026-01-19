@@ -1,8 +1,22 @@
-3:23:46 PM [log] [APPLY] {"id":"efcf66121c339-15fed5f8420be0-e7a35910e8acb-17363bc4a9c113","type":"APPLY","path":["eip6963RequestProvider"],"argumentList":[]}
-3:23:46 PM [log] [APPLY] {"id":"13a3a7b2af520-22d7bf4caccfa-12ba4623ae075d-3a4a264eb4001","type":"APPLY","path":["eip6963RequestProvider"],"argumentList":[]}
-3:23:46 PM [log] [GET] {"id":"bfe62ca11fd8a-2d27806a78d87-1a56ac7704dd21-d2ed6d575338e","type":"GET","path":["context"]}
-3:23:46 PM [log] [GET] {"id":"1804b9c1d913b6-9b14be24ac14b-1b206e0ed769d8-7f332aef7cfa2","type":"GET","path":["context"]}
-3:23:46 PM [log] [APPLY] {"id":"198f99a5770d-1aef057990c930-45a84c509dae9-1d75f448111823","type":"APPLY","path":["ethProviderRequestV2"],"argumentList":[{"type":"RAW","value":{"id":0,"method":"eth_accounts","jsonrpc":"2.0"}}]}
-3:23:46 PM [log] [APPLY] {"id":"5e55a6573e829-156ee8460313dc-16d22eafb2c5ce-d57d0782ea68a","type":"APPLY","path":["ethProviderRequestV2"],"argumentList":[{"type":"RAW","value":{"id":1,"method":"eth_requestAccounts","jsonrpc":"2.0"}}]}
-3:23:46 PM [log] [APPLY] {"id":"488f9db5ad99b-fc99651331f12-a31ed01e6c9b5-1b3fd2f28cea4","type":"APPLY","path":["ethProviderRequestV2"],"argumentList":[{"type":"RAW","value":{"id":2,"method":"eth_chainId","jsonrpc":"2.0"}}]}
-3:23:46 PM [log] [rabby-dapp-iframe-sync-url] {"type":"rabby-dapp-iframe-sync-url","token":null,"payload":{"url":"https://invisiblelaw.geoart.studio/eligibility"}}
+21:07:09.465 
+  Generating static pages using 1 worker (5/11) 
+21:07:09.898 
+Error occurred prerendering page "/eligibility". Read more: https://nextjs.org/docs/messages/prerender-error
+21:07:09.901 
+Error: Transaction hooks must be used within RainbowKitProvider
+21:07:09.902 
+    at fq (.next/server/chunks/ssr/[root-of-the-server]__87d54dd2._.js:1:222580)
+21:07:09.902 
+    at fr (.next/server/chunks/ssr/[root-of-the-server]__87d54dd2._.js:1:222675)
+21:07:09.902 
+    at hh (.next/server/chunks/ssr/[root-of-the-server]__87d54dd2._.js:1:303739) {
+21:07:09.902 
+  digest: '3622361611'
+21:07:09.902 
+}
+21:07:09.902 
+Export encountered an error on /eligibility/page: /eligibility, exiting the build.
+21:07:09.924 
+⨯ Next.js build worker exited with code: 1 and signal: null
+21:07:09.979 
+Error: Command "npm run build" exited with 1

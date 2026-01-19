@@ -28,22 +28,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Use webConfig as default, switch to miniappConfig once detected as miniapp
   const config = isDetected && isMiniApp ? miniappConfig : webConfig;
 
-  // Miniapp mode or still detecting: skip RainbowKit to allow SDK communication
-  if (isMiniApp || !isDetected) {
-    return (
-      <WagmiProvider config={config}>
-        <QueryClientProvider client={queryClient}>
-          <MiniAppProvider>
-            {children}
-          </MiniAppProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
-    );
-  }
-
-  // Web mode confirmed: Standard RainbowKit setup
+  // Always include RainbowKitProvider to ensure hooks work during static generation.
+  // CustomConnectButton handles mode switching internally (miniapp vs web).
   return (
-    <WagmiProvider config={webConfig}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <MiniAppProvider>
