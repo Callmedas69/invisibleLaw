@@ -31,7 +31,9 @@
       "Bash(npm search:*)",
       "Bash(npm info:*)",
       "Bash(npx --yes next build:*)",
-      "Bash(NODE_ENV=production node:*)"
+      "Bash(NODE_ENV=production node:*)",
+      "Bash(ping:*)",
+      "Bash(curl:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

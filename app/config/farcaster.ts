@@ -5,7 +5,7 @@
  * All metadata and URLs are defined here for consistency.
  */
 
-const APP_URL = process.env.NEXT_PUBLIC_DOMAIN_URL || "https://invisiblelaw.geoart.studio";
+const APP_URL = "https://invisiblelaw.geoart.studio";
 
 export const FARCASTER_CONFIG = {
   /** Whether miniapp mode is enabled */

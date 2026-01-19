@@ -1,11 +1,45 @@
-./app/context/MiniAppContext.tsx:68:22
-Type error: Argument of type 'Promise<boolean>' is not assignable to parameter of type 'SetStateAction<boolean>'.
-  66 |         // Check if we're inside a Farcaster miniapp
-  67 |         const inMiniApp = sdk.isInMiniApp();
-> 68 |         setIsMiniApp(inMiniApp);
-     |                      ^
-  69 |
-  70 |         if (inMiniApp) {
-  71 |           // Get the context (user info, etc.)
-Next.js build worker exited with code: 1 and signal: null
-Error: Command "npm run build" exited with 1
+Property
+Value
+version
+1
+name
+Invisible Law
+iconUrl
+https://invisiblelaw.geoart./iconUrl-200x200.png
+homeUrl
+https://invisiblelaw.geoart./eligibility
+imageUrl
+not set
+buttonTitle
+not set
+splashImageUrl
+https://invisiblelaw.geoart./splash-200x200.png
+splashBackgroundColor
+#ffffff
+webhookUrl
+not set
+subtitle
+Check your eligibility
+description
+Verify and join the allowlist for Invisible Law - 1,272 on-chain generative artworks governed by Phi.
+screenshotUrls
+not set
+primaryCategory
+social
+tags
+nft
+eligibility
+reputation
+allowlist
+heroImageUrl
+https://invisiblelaw.geoart./hero.png
+tagline
+not set
+ogTitle
+not set
+ogDescription
+not set
+ogImageUrl
+https://invisiblelaw.geoart./og.png
+castShareUrl
+not set
