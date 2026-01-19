@@ -22,7 +22,7 @@ export async function GET() {
       "signature": "1KEA9q7OK5+u/fryJbHJCr3D//VbdBEtCAyJJ9JQeUZ4tem3AbHwDM35q3QLiN74TPVfxg/3sV8zwJkJ9VutNhs="
     },
     miniapp: {
-      version: "1", // Required field per Farcaster spec
+      version: "1",
       name: metadata.name,
       subtitle: metadata.subtitle,
       description: metadata.description,
@@ -34,6 +34,7 @@ export async function GET() {
       ogImageUrl: urls.ogImageUrl,
       primaryCategory: metadata.primaryCategory,
       tags: metadata.tags,
+      noindex: true,
     },
   };
 
