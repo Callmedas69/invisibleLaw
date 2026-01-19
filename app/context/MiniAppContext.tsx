@@ -73,9 +73,7 @@ export function MiniAppProvider({ children }: { children: ReactNode }) {
           if (miniAppContext) {
             setContext(miniAppContext as MiniAppContextData);
           }
-
-          // Signal to Farcaster that the app is ready
-          sdk.actions.ready();
+          // Note: sdk.actions.ready() is called by individual pages when their UI is mounted
           setIsReady(true);
         }
       } catch (error) {
