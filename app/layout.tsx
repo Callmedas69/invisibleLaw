@@ -3,7 +3,6 @@ import { Benne } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { PhiGridBackground } from "./components/ui/PhiGridBackground";
-import { FARCASTER_CONFIG } from "./config/farcaster";
 
 const benne = Benne({
   variable: "--font-benne",
@@ -11,18 +10,20 @@ const benne = Benne({
   weight: "400",
 });
 
+const APP_URL = "https://invisiblelaw.geoart.studio";
+
 // Farcaster miniapp embed metadata
 const fcMiniappFrame = {
   version: "1",
-  imageUrl: FARCASTER_CONFIG.urls.ogImageUrl,
+  imageUrl: `${APP_URL}/og.png`,
   button: {
     title: "Join Allowlist",
     action: {
       type: "launch_frame",
-      name: FARCASTER_CONFIG.metadata.name,
-      url: FARCASTER_CONFIG.urls.homeUrl,
-      splashImageUrl: FARCASTER_CONFIG.urls.splashImageUrl,
-      splashBackgroundColor: FARCASTER_CONFIG.splash.backgroundColor,
+      name: "Invisible Law",
+      url: `${APP_URL}/eligibility`,
+      splashImageUrl: `${APP_URL}/splash-200x200.png`,
+      splashBackgroundColor: "#ffffff",
     },
   },
 };
@@ -32,8 +33,9 @@ export const metadata: Metadata = {
   description: "On-chain generative NFT collection based on the golden ratio",
   openGraph: {
     title: "Invisible Law",
-    description: FARCASTER_CONFIG.metadata.description,
-    images: [FARCASTER_CONFIG.urls.ogImageUrl],
+    description:
+      "Verify and join the allowlist for Invisible Law - 1,272 on-chain generative artworks governed by Phi.",
+    images: [`${APP_URL}/og.png`],
   },
   other: {
     "fc:miniapp": JSON.stringify(fcMiniappFrame),
