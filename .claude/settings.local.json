@@ -33,7 +33,8 @@
       "Bash(npx --yes next build:*)",
       "Bash(NODE_ENV=production node:*)",
       "Bash(ping:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 3; try { $r = Invoke-WebRequest -Uri ''http://localhost:3000'' -UseBasicParsing -TimeoutSec 5; Write-Host ''Status:'' $r.StatusCode } catch { Write-Host ''Server not responding yet or error:'' $_Exception.Message }\")"
     ]
   },
   "enableAllProjectMcpServers": true,

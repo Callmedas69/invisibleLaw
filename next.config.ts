@@ -12,14 +12,12 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Allow Farcaster clients to embed the app in iframe
-        source: "/(.*)",
+        // Standard security headers for all routes
+        source: "/:path*",
         headers: [
-          {
-            key: "Content-Security-Policy",
-            value:
-              "frame-ancestors 'self' https://*.farcaster.xyz https://warpcast.com",
-          },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         ],
       },
     ];
