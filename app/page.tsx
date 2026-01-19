@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from "react";
+import { sdk } from "@farcaster/miniapp-sdk";
 import Link from "next/link";
 import { Footer } from "@/app/components/layout/Footer";
 import { DrawerNav } from "@/app/components/layout/DrawerNav";
@@ -8,6 +12,10 @@ import { GeometricArrows } from "@/app/components/ui/GeometricArrows";
 import { PHI_POSITIONS, BAUHAUS_COLORS } from "@/app/config/theme";
 
 export default function Home() {
+  // Signal to Farcaster that the app is ready to display
+  useEffect(() => {
+    sdk.actions.ready();
+  }, []);
   return (
     <>
       <DrawerNav />
