@@ -27,7 +27,7 @@ export const ELIGIBILITY_CONFIG = {
   /** Share requirement - must share miniapp on Farcaster */
   share: {
     text: "Check your eligibility for Invisible Law allowlist!",
-    embeds: ["https://warpcast.com/~/add-cast-action/invisiblelaw.geoart.studio"],
+    embeds: ["https://invisiblelaw.geoart.studio/eligibility"],
   },
 } as const;
 

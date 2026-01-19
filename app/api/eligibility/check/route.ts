@@ -30,6 +30,7 @@ export async function GET(
   const fidParam = searchParams.get("fid");
   const fid = fidParam ? parseInt(fidParam, 10) : undefined;
   const shareHash = searchParams.get("shareHash") || undefined;
+  const skipShareRequirement = searchParams.get("skipShareRequirement") === "true";
 
   // Input validation
   if (!address) {
@@ -59,6 +60,7 @@ export async function GET(
     xFollowConfirmed,
     fid,
     shareHash,
+    skipShareRequirement,
   });
 
   return NextResponse.json(result);

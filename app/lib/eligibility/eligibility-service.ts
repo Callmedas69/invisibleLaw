@@ -132,6 +132,8 @@ export interface CheckEligibilityOptions {
   fid?: number;
   /** Cast hash to verify share requirement */
   shareHash?: string;
+  /** Skip share requirement (for web context where share is not available) */
+  skipShareRequirement?: boolean;
 }
 
 /**
@@ -154,7 +156,7 @@ export async function checkEligibility(
   // Support legacy boolean signature for backwards compatibility
   const opts: CheckEligibilityOptions =
     typeof options === "boolean" ? { xFollowConfirmed: options } : options;
-  const { xFollowConfirmed = false, fid, shareHash } = opts;
+  const { xFollowConfirmed = false, fid, shareHash, skipShareRequirement = false } = opts;
 
   const normalizedAddress = address.toLowerCase();
 
@@ -299,8 +301,8 @@ export async function checkEligibility(
   // Social requirement: ALL social checks must pass
   const passesSocialRequirement = social.every((s) => s.isFollowing);
 
-  // Share requirement: Must have shared
-  const passesShareRequirement = share.hasShared;
+  // Share requirement: Must have shared (or skipped for web context)
+  const passesShareRequirement = skipShareRequirement || share.hasShared;
 
   // Overall eligibility: all three requirements must pass
   const isEligible =
@@ -328,6 +330,8 @@ export interface AddToAllowlistOptions {
   fid?: number;
   /** Cast hash to verify share requirement */
   shareHash?: string;
+  /** Skip share requirement (for web context where share is not available) */
+  skipShareRequirement?: boolean;
 }
 
 /**
@@ -346,7 +350,7 @@ export async function addToAllowlistIfEligible(
   // Support legacy boolean signature for backwards compatibility
   const opts: AddToAllowlistOptions =
     typeof options === "boolean" ? { xFollowConfirmed: options } : options;
-  const { xFollowConfirmed, fid, shareHash } = opts;
+  const { xFollowConfirmed, fid, shareHash, skipShareRequirement } = opts;
 
   const normalizedAddress = address.toLowerCase();
 
@@ -365,6 +369,7 @@ export async function addToAllowlistIfEligible(
     xFollowConfirmed,
     fid,
     shareHash,
+    skipShareRequirement,
   });
 
   // Get FID from eligibility result (more reliable than passed fid)

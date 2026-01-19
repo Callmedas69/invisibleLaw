@@ -63,7 +63,7 @@ const getShareStorageKey = (addr: string) =>
 
 export function useEligibility(): UseEligibilityData {
   const { address, isConnected } = useAccount();
-  const { fid, composeCast } = useMiniApp();
+  const { fid, composeCast, isMiniApp } = useMiniApp();
 
   const [eligibility, setEligibility] = useState<EligibilityResult | null>(
     null
@@ -112,6 +112,9 @@ export function useEligibility(): UseEligibilityData {
         params.append("shareHash", shareHash);
       }
 
+      // Skip share requirement on web (non-miniapp context)
+      params.append("skipShareRequirement", String(!isMiniApp));
+
       const response = await fetch(`/api/eligibility/check?${params}`);
 
       if (!response.ok) {
@@ -127,7 +130,7 @@ export function useEligibility(): UseEligibilityData {
     } finally {
       setIsLoading(false);
     }
-  }, [address, isConnected, xFollowConfirmed, fid, shareHash]);
+  }, [address, isConnected, xFollowConfirmed, fid, shareHash, isMiniApp]);
 
   // Fetch on mount and when dependencies change
   useEffect(() => {
@@ -148,7 +151,7 @@ export function useEligibility(): UseEligibilityData {
   const shareCast = useCallback(async () => {
     const hash = await composeCast({
       text: ELIGIBILITY_CONFIG.share.text,
-      embeds: [...ELIGIBILITY_CONFIG.share.embeds],
+      embeds: ELIGIBILITY_CONFIG.share.embeds as [string],
     });
     if (hash && address) {
       localStorage.setItem(getShareStorageKey(address), hash);
@@ -177,6 +180,7 @@ export function useEligibility(): UseEligibilityData {
           xFollowConfirmed,
           fid, // Include FID if available from miniapp context
           shareHash, // Include shareHash for verification
+          skipShareRequirement: !isMiniApp, // Skip share requirement on web
         }),
       });
 
@@ -199,7 +203,7 @@ export function useEligibility(): UseEligibilityData {
     } finally {
       setIsAdding(false);
     }
-  }, [address, isConnected, eligibility?.isEligible, xFollowConfirmed, fid, shareHash, fetchEligibility]);
+  }, [address, isConnected, eligibility?.isEligible, xFollowConfirmed, fid, shareHash, isMiniApp, fetchEligibility]);
 
   // Derived values from eligibility result
   const scores = eligibility?.scores ?? [];

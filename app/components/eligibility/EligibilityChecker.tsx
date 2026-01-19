@@ -195,34 +195,36 @@ export function EligibilityChecker() {
         </div>
       </section>
 
-      {/* Share Requirement Section */}
-      <section className="space-y-2 sm:space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
-          <h2 className="font-serif text-lg">Share Requirement</h2>
-          <span className="text-sm text-foreground/50">
-            Must share to pass
-          </span>
-        </div>
+      {/* Share Requirement Section - Only shown in miniapp context */}
+      {isMiniApp && (
+        <section className="space-y-2 sm:space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
+            <h2 className="font-serif text-lg">Share Requirement</h2>
+            <span className="text-sm text-foreground/50">
+              Must share to pass
+            </span>
+          </div>
 
-        <ShareCard
-          hasShared={share?.hasShared ?? false}
-          verified={share?.verified ?? false}
-          error={share?.error ?? null}
-          isLoading={isLoading}
-          onShare={shareCast}
-        />
+          <ShareCard
+            hasShared={share?.hasShared ?? false}
+            verified={share?.verified ?? false}
+            error={share?.error ?? null}
+            isLoading={isLoading}
+            onShare={shareCast}
+          />
 
-        {/* Share requirement status */}
-        <div
-          className={`text-sm font-medium ${
-            passesShareRequirement ? "text-green-600" : "text-foreground/50"
-          }`}
-        >
-          {passesShareRequirement
-            ? "Share requirement met"
-            : "Share requirement not met"}
-        </div>
-      </section>
+          {/* Share requirement status */}
+          <div
+            className={`text-sm font-medium ${
+              passesShareRequirement ? "text-green-600" : "text-foreground/50"
+            }`}
+          >
+            {passesShareRequirement
+              ? "Share requirement met"
+              : "Share requirement not met"}
+          </div>
+        </section>
+      )}
 
       {/* Action Section */}
       <section className="pt-3 sm:pt-4 border-t border-foreground/10">

@@ -33,7 +33,8 @@ interface MiniAppContextData {
 /** Options for composing a cast */
 interface ComposeCastOptions {
   text?: string;
-  embeds?: string[];
+  /** Max 2 embeds allowed by Farcaster SDK */
+  embeds?: [] | [string] | [string, string];
 }
 
 interface MiniAppContextValue {

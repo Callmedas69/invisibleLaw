@@ -14,6 +14,7 @@ interface AddRequest {
   xFollowConfirmed: boolean;
   fid?: number;
   shareHash?: string;
+  skipShareRequirement?: boolean;
 }
 
 /**
@@ -44,7 +45,7 @@ export async function POST(
     );
   }
 
-  const { address, xFollowConfirmed, fid, shareHash } = body;
+  const { address, xFollowConfirmed, fid, shareHash, skipShareRequirement } = body;
 
   // Input validation
   if (!address) {
@@ -68,11 +69,12 @@ export async function POST(
     );
   }
 
-  // Call business logic with optional fid and shareHash
+  // Call business logic with optional fid, shareHash, and skipShareRequirement
   const result = await addToAllowlistIfEligible(address, {
     xFollowConfirmed,
     fid,
     shareHash,
+    skipShareRequirement,
   });
 
   // Return appropriate status code based on result
