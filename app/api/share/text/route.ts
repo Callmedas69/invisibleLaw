@@ -42,5 +42,11 @@ export async function GET(
   // Call business logic
   const result = await buildShareTextWithMutuals(fid);
 
+  // Debug logging for mention troubleshooting
+  console.log("[ShareText] FID:", fid);
+  console.log("[ShareText] Mentions:", result.mentions);
+  console.log("[ShareText] Has mutuals:", result.hasMutuals);
+  console.log("[ShareText] Full text:", JSON.stringify(result.text));
+
   return NextResponse.json(result);
 }

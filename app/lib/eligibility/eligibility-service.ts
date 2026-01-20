@@ -481,8 +481,15 @@ export async function buildShareTextWithMutuals(
     // 1. Fetch mutuals from Quotient (repository call)
     const mutuals = await fetchQuotientMutuals(fid);
 
+    // Debug: Log Quotient mutuals
+    console.log(
+      "[ShareText] Quotient mutuals:",
+      mutuals?.map((m) => ({ fid: m.fid, username: m.username })) ?? "null"
+    );
+
     // Graceful fallback if no mutuals or error
     if (!mutuals || mutuals.length === 0) {
+      console.log("[ShareText] No mutuals found, returning base text");
       return {
         text: baseText,
         mentions: [],
@@ -499,14 +506,26 @@ export async function buildShareTextWithMutuals(
     const fids = topMutuals.map((m) => m.fid);
     const fidToUsername = await fetchNeynarUsersByFids(fids);
 
+    // Debug: Log Neynar verified usernames
+    console.log(
+      "[ShareText] Neynar verified:",
+      fidToUsername ? Array.from(fidToUsername.entries()) : "null"
+    );
+
     // 4. Business rule: Only use verified usernames from Neynar
     // This ensures mentions are clickable in Farcaster miniapps
+    // Trim usernames to ensure no whitespace issues
     const mentions = fids
       .map((mutualFid) => fidToUsername?.get(mutualFid))
-      .filter((u): u is string => Boolean(u));
+      .filter((u): u is string => Boolean(u))
+      .map((u) => u.trim());
+
+    // Debug: Log final mentions
+    console.log("[ShareText] Final mentions:", mentions);
 
     // Graceful fallback if no verified usernames
     if (mentions.length === 0) {
+      console.log("[ShareText] No verified usernames, returning base text");
       return {
         text: baseText,
         mentions: [],
