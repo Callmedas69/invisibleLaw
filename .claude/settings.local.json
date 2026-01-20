@@ -44,7 +44,8 @@
       "Bash(xargs cat:*)",
       "WebFetch(domain:dev.neynar.com)",
       "WebFetch(domain:docs.neynar.com)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "WebFetch(domain:www.npmjs.com)"
     ]
   },
   "enableAllProjectMcpServers": true,

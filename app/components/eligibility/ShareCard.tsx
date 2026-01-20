@@ -9,6 +9,8 @@ interface ShareCardProps {
   error: string | null;
   /** Loading state */
   isLoading?: boolean;
+  /** Whether share verification is in progress (waiting for Neynar to index) */
+  isVerifying?: boolean;
   /** Callback when user clicks share button */
   onShare: () => void;
 }
@@ -18,6 +20,7 @@ export function ShareCard({
   verified,
   error,
   isLoading = false,
+  isVerifying = false,
   onShare,
 }: ShareCardProps) {
   return (
@@ -50,7 +53,9 @@ export function ShareCard({
         </div>
 
         {/* Status indicator */}
-        {isLoading ? (
+        {isVerifying ? (
+          <span className="text-sm text-foreground/50">Verifying...</span>
+        ) : isLoading ? (
           <span className="text-sm text-foreground/50">Checking...</span>
         ) : hasShared ? (
           <span className="text-sm text-green-600 font-medium">
@@ -62,12 +67,12 @@ export function ShareCard({
       </div>
 
       {/* Error message */}
-      {error && !isLoading && (
+      {error && !isLoading && !isVerifying && (
         <p className="text-sm text-red-500">{error}</p>
       )}
 
       {/* Share button */}
-      {!hasShared && !isLoading && (
+      {!hasShared && !isLoading && !isVerifying && (
         <button
           onClick={onShare}
           className="w-full px-3 py-2 text-sm text-center min-h-[40px] flex items-center justify-center border border-foreground/20 hover:bg-foreground/5 transition-colors"

@@ -39,6 +39,8 @@ export interface UseEligibilityData {
   hasClickedXFollow: boolean;
   /** Current share hash (from localStorage) */
   shareHash: string | null;
+  /** Whether share verification is in progress (waiting for Neynar to index) */
+  isVerifying: boolean;
   /** Loading state */
   isLoading: boolean;
   /** Adding to allowlist in progress */
@@ -71,6 +73,7 @@ export function useEligibility(): UseEligibilityData {
   const [xFollowConfirmed, setXFollowConfirmed] = useState(false);
   const [hasClickedXFollow, setHasClickedXFollow] = useState(false);
   const [shareHash, setShareHash] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -171,8 +174,17 @@ export function useEligibility(): UseEligibilityData {
     });
     if (hash && address) {
       localStorage.setItem(getShareStorageKey(address), hash);
+
+      // Set verifying state before the delay
+      setIsVerifying(true);
+
+      // Wait 3 seconds for Neynar to index the cast before triggering verification
+      // Farcaster is eventually consistent - the cast needs time to propagate
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      // Now update shareHash which will trigger the eligibility re-check via useEffect
       setShareHash(hash);
-      // Refetch will happen automatically via useEffect dependency on shareHash
+      setIsVerifying(false);
     }
   }, [composeCast, address, fid]);
 
@@ -246,6 +258,7 @@ export function useEligibility(): UseEligibilityData {
     xFollowConfirmed,
     hasClickedXFollow,
     shareHash,
+    isVerifying,
     isLoading,
     isAdding,
     error,

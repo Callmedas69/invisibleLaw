@@ -333,8 +333,9 @@ export async function fetchCastByHash(
           accept: "application/json",
           api_key: getNeynarApiKey(),
         },
-        // Cache for 1 minute
-        next: { revalidate: 60 },
+        // No caching for cast lookups - prevents cached 404 responses
+        // when a cast is just created but not yet indexed by Neynar
+        next: { revalidate: 0 },
       }
     );
 

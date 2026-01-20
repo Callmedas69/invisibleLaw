@@ -24,6 +24,7 @@ export function EligibilityChecker() {
     isAlreadyAllowlisted,
     xFollowConfirmed,
     hasClickedXFollow,
+    isVerifying,
     isLoading,
     isAdding,
     error,
@@ -210,6 +211,7 @@ export function EligibilityChecker() {
             verified={share?.verified ?? false}
             error={share?.error ?? null}
             isLoading={isLoading}
+            isVerifying={isVerifying}
             onShare={shareCast}
           />
 

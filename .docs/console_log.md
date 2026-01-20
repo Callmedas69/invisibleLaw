@@ -1,115 +1,529 @@
-2026-01-20 07:07:51.943 [info] [ShareText] Quotient mutuals: [
-  { fid: 1419696, username: 'geoart' },
-  { fid: 1067156, username: 'muhalfatiha' },
-  { fid: 259866, username: '0xboniex.eth' },
-  { fid: 195916, username: 'goyabean-' },
-  { fid: 221578, username: 'apex777.eth' },
-  { fid: 99, username: 'jesse.base.eth' },
-  { fid: 4134, username: 'andreitr.eth' },
-  { fid: 539, username: 'ace' },
-  { fid: 342703, username: 'nftkid' },
-  { fid: 193010, username: 'spilla' },
-  { fid: 274, username: 'n' },
-  { fid: 1393178, username: '0xmfers.base.eth' },
-  { fid: 211246, username: 'filter8' },
-  { fid: 421001, username: 'birtcorn' },
-  { fid: 278902, username: 'tkarra' },
-  { fid: 20086, username: 'punkrock' },
-  { fid: 441956, username: 'arrotu' },
-  { fid: 223079, username: 'cryptoforchange' },
-  { fid: 219402, username: 'minangmulu' },
-  { fid: 14582, username: 'megabyte0x.eth' },
-  { fid: 350911, username: 'compusophy' },
-  { fid: 326606, username: 'kryptokat2022' },
-  { fid: 677840, username: 'rosecityweb3' },
-  { fid: 1078302, username: 'alary-creates' },
-  { fid: 532924, username: 'amirgul9' },
-  { fid: 290734, username: 'kenzyxz2' },
-  { fid: 289874, username: 'mdqst' },
-  { fid: 345377, username: 'basevip' },
-  { fid: 443830, username: 'inkmfer.eth' },
-  { fid: 217780, username: '0xsujit' },
-  { fid: 14377, username: 'cryptogreen' },
-  { fid: 217720, username: 'namina0x' },
-  { fid: 273570, username: '0xvsr' },
-  { fid: 189285, username: 'bene' },
-  { fid: 217261, username: 'duckfacts.eth' },
-  { fid: 6902, username: 'a1' },
-  { fid: 270228, username: 'mehrad' },
-  { fid: 17452, username: 'niazi' },
-  { fid: 260337, username: 'ramdan1994' },
-  { fid: 207400, username: 'dev0ps' },
-  { fid: 235940, username: 'ismaone' },
-  { fid: 11961, username: 'tekrox.eth' },
-  { fid: 260388, username: 'cryptoprofitjp' },
-  { fid: 1454599, username: 'kratoss.base.eth' },
-  { fid: 15211, username: 'statuette' },
-  { fid: 575634, username: 'tmdi' },
-  { fid: 982731, username: '0xshahin' },
-  { fid: 436252, username: 'degenpawn' },
-  { fid: 302424, username: 'ombray' },
-  { fid: 294346, username: 'raremahmud' },
-  { fid: 2420, username: '4484.eth' },
-  { fid: 328875, username: '0xcemycon' },
-  { fid: 1113725, username: 'basedboniex.base.eth' },
-  { fid: 1009776, username: 'betobutter' },
-  { fid: 24128, username: 'chris24.eth' },
-  { fid: 211693, username: 'mistershot' },
-  { fid: 290692, username: 'pixotchi.eth' },
-  { fid: 1114330, username: 'yuna2k' },
-  { fid: 217695, username: 'amarr' },
-  { fid: 218952, username: 'dailofrog' },
-  { fid: 191843, username: 'dt2001009' },
-  { fid: 3621, username: 'horsefacts.eth' },
-  { fid: 866228, username: 'jacobo10s' },
-  { fid: 1106851, username: 'mrautocrat' },
-  { fid: 824976, username: 'wizzfizz' },
-  { fid: 982650, username: 'adamystcl' },
-  { fid: 7620, username: 'cybershakti' },
-  { fid: 281091, username: 'drzee.eth' },
-  { fid: 236018, username: 'ecnew24' },
-  { fid: 192571, username: 'quynhchi' },
-  { fid: 259161, username: 'riyantama' },
-  { fid: 320215, username: 'tn100x.eth' },
-  { fid: 280534, username: 'underdog' },
-  { fid: 246584, username: '0impact' },
-  { fid: 1133049, username: '0xmetaland.base.eth' },
-  { fid: 622145, username: '0xoptimist' },
-  { fid: 13870, username: '0xsatori' },
-  { fid: 273791, username: '315' },
-  { fid: 286105, username: '94993' },
-  { fid: 354795, username: 'aaronv.eth' },
-  { fid: 200375, username: 'adnum.base.eth' },
-  { fid: 240969, username: 'afterlife13' },
-  { fid: 1919454, username: 'alextanvir.base.eth' },
-  { fid: 262405, username: 'am92' },
-  { fid: 1170850, username: 'amarsznx.base.eth' },
-  { fid: 17195, username: 'andreaboi.eth' },
-  { fid: 1791, username: 'andrei0x309' },
-  { fid: 13219, username: 'andreih' },
-  { fid: 728889, username: 'andzelo' },
-  { fid: 224530, username: 'anodie' },
-  { fid: 718926, username: 'arezame' },
-  { fid: 204173, username: 'asenderling.eth' },
-  { fid: 6400, username: 'aspyn' },
-  { fid: 474817, username: 'attilagaliba.eth' },
-  { fid: 302008, username: 'bangcode.base.eth' },
-  { fid: 469908, username: 'basedbits' },
-  { fid: 308448, username: 'basedmedia.eth' },
-  { fid: 841501, username: 'basednoun.eth' },
-  { fid: 12132, username: 'basename' },
-  { fid: 8152, username: 'beep.eth' },
-  ... 165 more items
-]
-2026-01-20 07:07:51.955 [info] [ShareText] Neynar verified: [
-  [ 1419696, 'geoart' ],
-  [ 1067156, 'muhalfatiha' ],
-  [ 259866, '0xboniex.eth' ],
-  [ 195916, 'goyabean-' ],
-  [ 221578, 'apex777.eth' ]
-]
-2026-01-20 07:07:51.955 [info] [ShareText] Final mentions: [ 'geoart', 'muhalfatiha', '0xboniex.eth', 'goyabean-', 'apex777.eth' ]
-2026-01-20 07:07:51.955 [info] [ShareText] FID: 22420
-2026-01-20 07:07:51.955 [info] [ShareText] Mentions: [ 'geoart', 'muhalfatiha', '0xboniex.eth', 'goyabean-', 'apex777.eth' ]
-2026-01-20 07:07:51.956 [info] [ShareText] Has mutuals: true
-2026-01-20 07:07:51.956 [info] [ShareText] Full text: "See if you’re eligible for the allowlist.\n\n@geoart @muhalfatiha @0xboniex.eth @goyabean- @apex777.eth"
+index-DkYC4LQK.js:304 frameEvent {event: 'eip6963:announceProvider', info: {…}}
+index-DkYC4LQK.js:304 frameEvent {event: 'eip6963:announceProvider', info: {…}}
+7da70b4c59e61db6.js:7 [MiniAppContext] ready() called successfully
+index-DkYC4LQK.js:304 [miniapp-host] eth provider req:  {id: 0, method: 'eth_accounts', jsonrpc: '2.0'}
+EmbeddedWalletContext.tsx:844 Embedded1193Provider.request() called with args {id: 0, method: 'eth_accounts', jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider res:  {result: Array(1), id: 0, jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider req:  {id: 1, method: 'eth_accounts', jsonrpc: '2.0'}
+EmbeddedWalletContext.tsx:844 Embedded1193Provider.request() called with args {id: 1, method: 'eth_accounts', jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider res:  {result: Array(1), id: 1, jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider req:  {id: 2, method: 'eth_chainId', jsonrpc: '2.0'}
+EmbeddedWalletContext.tsx:844 Embedded1193Provider.request() called with args {id: 2, method: 'eth_chainId', jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider res:  {result: '0x2105', id: 2, jsonrpc: '2.0'}
+3294ec8f7058b5fe.js:3 Fetch failed loading: HEAD "https://invisiblelaw.geoart.studio/".
+checkCrossOriginOpenerPolicy @ 3294ec8f7058b5fe.js:3
+oc @ 3294ec8f7058b5fe.js:12
+getProvider @ 7da70b4c59e61db6.js:1
+await in getProvider
+ed @ 7da70b4c59e61db6.js:1
+await in ed
+onMount @ 7da70b4c59e61db6.js:1
+await in onMount
+(anonymous) @ 7da70b4c59e61db6.js:1
+ih @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+uc @ 11fe018d7d0805f3.js:1
+uf @ 11fe018d7d0805f3.js:1
+sE @ 11fe018d7d0805f3.js:1
+(anonymous) @ 11fe018d7d0805f3.js:1
+O @ 11fe018d7d0805f3.js:1
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+9a0de06be778fc67.js:1 Fetch finished loading: POST "https://pulse.walletconnect.org/e?projectId=c10cf385fa20b73432bdfc5eb4b92f53&st=appkit&sv=html-core-1.7.8".
+o @ 9a0de06be778fc67.js:1
+post @ 9a0de06be778fc67.js:1
+_sendAnalyticsEvent @ 9a0de06be778fc67.js:2
+sendEvent @ 9a0de06be778fc67.js:2
+sendInitializeEvent @ 48f29783d21e6682.js:10
+initialize @ 48f29783d21e6682.js:10
+await in initialize
+hb @ 48f29783d21e6682.js:10
+hE @ 48f29783d21e6682.js:10
+hI @ 48f29783d21e6682.js:10
+initialize @ 0194d4a436410713.js:10
+await in initialize
+init @ 0194d4a436410713.js:10
+a @ 7da70b4c59e61db6.js:1
+await in a
+getProvider @ 7da70b4c59e61db6.js:1
+setup @ 7da70b4c59e61db6.js:1
+y @ 7da70b4c59e61db6.js:1
+(anonymous) @ 7da70b4c59e61db6.js:1
+nY @ 7da70b4c59e61db6.js:1
+n$ @ 7da70b4c59e61db6.js:1
+ia @ 7da70b4c59e61db6.js:1
+sT @ 7da70b4c59e61db6.js:1
+module evaluation @ f60f7615d417ce94.js:1
+q @ turbopack-3f0ab35449db0c3d.js:4
+B @ turbopack-3f0ab35449db0c3d.js:4
+i.r @ turbopack-3f0ab35449db0c3d.js:1
+f @ 109ded6b176cf8ff.js:1
+I @ 109ded6b176cf8ff.js:1
+P @ 109ded6b176cf8ff.js:1
+lC @ 11fe018d7d0805f3.js:1
+io @ 11fe018d7d0805f3.js:1
+sc @ 11fe018d7d0805f3.js:1
+(anonymous) @ 11fe018d7d0805f3.js:1
+u9 @ 11fe018d7d0805f3.js:1
+sV @ 11fe018d7d0805f3.js:1
+O @ 11fe018d7d0805f3.js:1
+index-DkYC4LQK.js:304 [miniapp-host] eth provider req:  {id: 3, method: 'eth_requestAccounts', jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider res:  {result: Array(1), id: 3, jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider req:  {id: 4, method: 'eth_chainId', jsonrpc: '2.0'}
+EmbeddedWalletContext.tsx:844 Embedded1193Provider.request() called with args {id: 4, method: 'eth_chainId', jsonrpc: '2.0'}
+index-DkYC4LQK.js:304 [miniapp-host] eth provider res:  {result: '0x2105', id: 4, jsonrpc: '2.0'}
+109ded6b176cf8ff.js:1  GET https://invisiblelaw.geoart.studio/gallery?_rsc=1r34m 404 (Not Found)
+b @ 109ded6b176cf8ff.js:1
+er @ 109ded6b176cf8ff.js:1
+Y @ 109ded6b176cf8ff.js:1
+(anonymous) @ 109ded6b176cf8ff.js:1
+(anonymous) @ 109ded6b176cf8ff.js:1
+M @ 109ded6b176cf8ff.js:1
+109ded6b176cf8ff.js:1 Fetch failed loading: GET "https://invisiblelaw.geoart.studio/gallery?_rsc=1r34m".
+b @ 109ded6b176cf8ff.js:1
+er @ 109ded6b176cf8ff.js:1
+Y @ 109ded6b176cf8ff.js:1
+(anonymous) @ 109ded6b176cf8ff.js:1
+(anonymous) @ 109ded6b176cf8ff.js:1
+M @ 109ded6b176cf8ff.js:1
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+index-DkYC4LQK.js:28 Error: <svg> attribute width: Expected length, "small".
+tt @ index-DkYC4LQK.js:28
+Dr @ index-DkYC4LQK.js:29
+on @ index-DkYC4LQK.js:29
+Zp @ index-DkYC4LQK.js:28
+so @ index-DkYC4LQK.js:28
+rf @ index-DkYC4LQK.js:28
+th @ index-DkYC4LQK.js:28
+Jc @ index-DkYC4LQK.js:28
+Xd @ index-DkYC4LQK.js:28
+df @ index-DkYC4LQK.js:28
+Te @ index-DkYC4LQK.js:21
+h @ vendor-draftjs-XP7jpNAg.js:17
+y @ vendor-draftjs-XP7jpNAg.js:17
+E @ vendor-draftjs-XP7jpNAg.js:17
+postMessage
+s @ vendor-draftjs-XP7jpNAg.js:17
+l @ vendor-draftjs-XP7jpNAg.js:17
+xe @ index-DkYC4LQK.js:21
+Te @ index-DkYC4LQK.js:21
+h @ vendor-draftjs-XP7jpNAg.js:17
+y @ vendor-draftjs-XP7jpNAg.js:17
+E @ vendor-draftjs-XP7jpNAg.js:17
+postMessage
+s @ vendor-draftjs-XP7jpNAg.js:17
+l @ vendor-draftjs-XP7jpNAg.js:17
+xe @ index-DkYC4LQK.js:21
+_e @ index-DkYC4LQK.js:21
+e.unstable_scheduleCallback @ index-DkYC4LQK.js:21
+uf @ index-DkYC4LQK.js:28
+lh @ index-DkYC4LQK.js:28
+(anonymous) @ index-DkYC4LQK.js:28
+index-DkYC4LQK.js:28 Error: <svg> attribute height: Expected length, "small".
+tt @ index-DkYC4LQK.js:28
+Dr @ index-DkYC4LQK.js:29
+on @ index-DkYC4LQK.js:29
+Zp @ index-DkYC4LQK.js:28
+so @ index-DkYC4LQK.js:28
+rf @ index-DkYC4LQK.js:28
+th @ index-DkYC4LQK.js:28
+Jc @ index-DkYC4LQK.js:28
+Xd @ index-DkYC4LQK.js:28
+df @ index-DkYC4LQK.js:28
+Te @ index-DkYC4LQK.js:21
+h @ vendor-draftjs-XP7jpNAg.js:17
+y @ vendor-draftjs-XP7jpNAg.js:17
+E @ vendor-draftjs-XP7jpNAg.js:17
+postMessage
+s @ vendor-draftjs-XP7jpNAg.js:17
+l @ vendor-draftjs-XP7jpNAg.js:17
+xe @ index-DkYC4LQK.js:21
+Te @ index-DkYC4LQK.js:21
+h @ vendor-draftjs-XP7jpNAg.js:17
+y @ vendor-draftjs-XP7jpNAg.js:17
+E @ vendor-draftjs-XP7jpNAg.js:17
+postMessage
+s @ vendor-draftjs-XP7jpNAg.js:17
+l @ vendor-draftjs-XP7jpNAg.js:17
+xe @ index-DkYC4LQK.js:21
+_e @ index-DkYC4LQK.js:21
+e.unstable_scheduleCallback @ index-DkYC4LQK.js:21
+uf @ index-DkYC4LQK.js:28
+lh @ index-DkYC4LQK.js:28
+(anonymous) @ index-DkYC4LQK.js:28
+index-DkYC4LQK.js:90 XHR finished loading: POST "https://farcaster.xyz/~api/v2/amp/api".
+j @ index-DkYC4LQK.js:90
+Request$1.send @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+logEvent @ index-DkYC4LQK.js:106
+(anonymous) @ index-DkYC4LQK.js:215
+(anonymous) @ index-DkYC4LQK.js:215
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:319
+(anonymous) @ index-DkYC4LQK.js:304
+n @ index-DkYC4LQK.js:304
+index-DkYC4LQK.js:9 Fetch finished loading: PUT "https://farcaster.xyz/~api/v2/cast-attachments".
+fetch @ index-DkYC4LQK.js:9
+fetchWithRetry @ index-DkYC4LQK.js:9
+put @ index-DkYC4LQK.js:9
+processCastAttachments @ index-DkYC4LQK.js:9
+(anonymous) @ index-DkYC4LQK.js:12
+(anonymous) @ index-DkYC4LQK.js:12
+(anonymous) @ index-DkYC4LQK.js:319
+rs @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+$d @ index-DkYC4LQK.js:28
+ga @ index-DkYC4LQK.js:28
+postMessage
+s @ vendor-draftjs-XP7jpNAg.js:17
+l @ vendor-draftjs-XP7jpNAg.js:17
+xe @ index-DkYC4LQK.js:21
+_e @ index-DkYC4LQK.js:21
+e.unstable_scheduleCallback @ index-DkYC4LQK.js:21
+uf @ index-DkYC4LQK.js:28
+lh @ index-DkYC4LQK.js:28
+(anonymous) @ index-DkYC4LQK.js:28
+index-DkYC4LQK.js:9 Fetch finished loading: POST "https://farcaster.xyz/~api/v1/analytics-events".
+fetch @ index-DkYC4LQK.js:9
+fetchWithRetry @ index-DkYC4LQK.js:9
+post @ index-DkYC4LQK.js:9
+recordAnalyticsEvents @ index-DkYC4LQK.js:9
+(anonymous) @ index-DkYC4LQK.js:10
+setTimeout
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:215
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ UnfocusedCast-DgqrPivT.js:6
+setTimeout
+onChange @ UnfocusedCast-DgqrPivT.js:6
+observe.root @ index-DkYC4LQK.js:295
+(anonymous) @ index-DkYC4LQK.js:295
+(anonymous) @ index-DkYC4LQK.js:295
+(anonymous) @ index-DkYC4LQK.js:295
+index-DkYC4LQK.js:90 XHR finished loading: POST "https://farcaster.xyz/~api/v2/amp/api".
+j @ index-DkYC4LQK.js:90
+Request$1.send @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+e @ index-DkYC4LQK.js:106
+logEvent @ index-DkYC4LQK.js:106
+(anonymous) @ index-DkYC4LQK.js:215
+(anonymous) @ index-DkYC4LQK.js:319
+await in (anonymous)
+mf @ index-DkYC4LQK.js:28
+(anonymous) @ index-DkYC4LQK.js:28
+Il @ index-DkYC4LQK.js:28
+cl @ index-DkYC4LQK.js:28
+xl @ index-DkYC4LQK.js:29
+qh @ index-DkYC4LQK.js:29
+index-DkYC4LQK.js:9 Fetch finished loading: POST "https://farcaster.xyz/~api/v2/casts".
+fetch @ index-DkYC4LQK.js:9
+fetchWithRetry @ index-DkYC4LQK.js:9
+post @ index-DkYC4LQK.js:9
+createCast @ index-DkYC4LQK.js:9
+(anonymous) @ index-DkYC4LQK.js:13
+(anonymous) @ index-DkYC4LQK.js:319
+await in (anonymous)
+mf @ index-DkYC4LQK.js:28
+(anonymous) @ index-DkYC4LQK.js:28
+Il @ index-DkYC4LQK.js:28
+cl @ index-DkYC4LQK.js:28
+xl @ index-DkYC4LQK.js:29
+qh @ index-DkYC4LQK.js:29
+index-DkYC4LQK.js:28 [Violation] 'setTimeout' handler took 56ms
+UnfocusedCast-DgqrPivT.js:41 Uncaught (in promise) Event {isTrusted: true, type: 'error', target: img, currentTarget: null, eventPhase: 0, …}
+C.onerror @ UnfocusedCast-DgqrPivT.js:41
+index-DkYC4LQK.js:9 Fetch finished loading: POST "https://farcaster.xyz/~api/v1/analytics-events".
+fetch @ index-DkYC4LQK.js:9
+fetchWithRetry @ index-DkYC4LQK.js:9
+post @ index-DkYC4LQK.js:9
+recordAnalyticsEvents @ index-DkYC4LQK.js:9
+(anonymous) @ index-DkYC4LQK.js:10
+setTimeout
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:215
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ index-DkYC4LQK.js:10
+(anonymous) @ UnfocusedCast-DgqrPivT.js:6
+setTimeout
+onChange @ UnfocusedCast-DgqrPivT.js:6
+observe.root @ index-DkYC4LQK.js:295
+(anonymous) @ index-DkYC4LQK.js:295
+(anonymous) @ index-DkYC4LQK.js:295
+(anonymous) @ index-DkYC4LQK.js:295
