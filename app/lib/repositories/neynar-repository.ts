@@ -253,6 +253,67 @@ export async function checkNeynarFollowStatus(
 }
 
 /**
+ * Fetches Farcaster usernames for multiple FIDs in bulk.
+ *
+ * Used to verify usernames before building share text with mentions.
+ * Neynar is the authoritative source for Farcaster usernames.
+ *
+ * @param fids - Array of Farcaster user IDs
+ * @returns Map of FID to username, or null on error
+ */
+export async function fetchNeynarUsersByFids(
+  fids: number[]
+): Promise<Map<number, string> | null> {
+  if (fids.length === 0) {
+    return new Map();
+  }
+
+  try {
+    // Neynar bulk endpoint accepts comma-separated FIDs
+    const fidsParam = fids.join(",");
+    const response = await fetch(
+      `${NEYNAR_API_BASE}/user/bulk?fids=${fidsParam}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          api_key: getNeynarApiKey(),
+        },
+        // Cache for 5 minutes
+        next: { revalidate: 300 },
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        `[NeynarRepository] API error: ${response.status} ${response.statusText}`
+      );
+      return null;
+    }
+
+    const data = await response.json();
+
+    // Response format: { users: [user1, user2, ...] }
+    const users: NeynarApiUser[] = data.users;
+
+    if (!users) {
+      return new Map();
+    }
+
+    // Map FID to username
+    const fidToUsername = new Map<number, string>();
+    for (const user of users) {
+      fidToUsername.set(user.fid, user.username);
+    }
+
+    return fidToUsername;
+  } catch (error) {
+    console.error("[NeynarRepository] Failed to fetch users by FIDs:", error);
+    return null;
+  }
+}
+
+/**
  * Fetches a cast by its hash.
  *
  * Data fetching ONLY - no business logic.
