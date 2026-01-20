@@ -157,6 +157,7 @@ export function EligibilityChecker() {
           {/* X (Twitter) */}
           {xSocial && (
             <SocialFollowCard
+              key="social-x"
               platform="x"
               username={xSocial.username}
               profileUrl={xSocial.profileUrl}
@@ -173,6 +174,7 @@ export function EligibilityChecker() {
           {/* Farcaster */}
           {fcSocial && (
             <SocialFollowCard
+              key="social-farcaster"
               platform="farcaster"
               username={fcSocial.username}
               profileUrl={fcSocial.profileUrl}

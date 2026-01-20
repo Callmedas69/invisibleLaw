@@ -65,12 +65,15 @@ export function SocialFollowCard({
   const isX = platform === "x";
 
   const handleFollowClick = () => {
+    // Only run verification animation for X platform (which has the "I Followed" button)
+    if (!isX || !onFollowClick) return;
+
     // Start verification animation
     setIsVerifyingFollow(true);
 
     // After 2 seconds, enable the "I Followed" button
     setTimeout(() => {
-      onFollowClick?.();
+      onFollowClick();
       setIsVerifyingFollow(false);
     }, 2000);
   };
