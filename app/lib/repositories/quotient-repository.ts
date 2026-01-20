@@ -43,20 +43,23 @@ export interface QuotientMutual {
   fid: number;
   username: string;
   combinedScore: number;
-  rank: number | null;
+  rank: number;
 }
 
 /** Quotient connections API response types */
 interface QuotientConnectionsApiResponse {
-  data: QuotientConnectionApiData[];
-  count: number;
+  fid: number;
+  mutuals: QuotientMutualApiData[] | null;
 }
 
-interface QuotientConnectionApiData {
+interface QuotientMutualApiData {
   fid: number;
   username: string;
-  combinedScore: number;
-  rank: number | null;
+  pfp_url: string | null;
+  rank: number;
+  combined_score: number;
+  attention_score: number;
+  influence_score: number;
 }
 
 /**
@@ -157,15 +160,15 @@ export async function fetchQuotientMutuals(
 
     const data: QuotientConnectionsApiResponse = await response.json();
 
-    if (!data.data || data.data.length === 0) {
+    if (!data.mutuals || data.mutuals.length === 0) {
       return [];
     }
 
     // Map to domain model (no sorting - that's business logic)
-    return data.data.map((item) => ({
+    return data.mutuals.map((item) => ({
       fid: item.fid,
       username: item.username,
-      combinedScore: item.combinedScore,
+      combinedScore: item.combined_score,
       rank: item.rank,
     }));
   } catch (error) {
