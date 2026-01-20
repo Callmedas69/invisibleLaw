@@ -536,8 +536,8 @@ export async function buildShareTextWithMutuals(
     // 5. Format mentions text
     const mentionsText = mentions.map((u) => `@${u}`).join(" ");
 
-    // Combine base text with mentions
-    const text = `${baseText}\n\n${mentionsText}`;
+    // Combine mentions with base text (mentions first for Farcaster clickability)
+    const text = `${mentionsText}\n\n${baseText}`;
 
     return {
       text,
