@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface SocialFollowCardProps {
   platform: "x" | "farcaster";
   username: string;
@@ -57,8 +59,21 @@ export function SocialFollowCard({
   hasClickedFollow = false,
   onFollowClick,
 }: SocialFollowCardProps) {
+  const [isVerifyingFollow, setIsVerifyingFollow] = useState(false);
+
   const info = PLATFORM_INFO[platform];
   const isX = platform === "x";
+
+  const handleFollowClick = () => {
+    // Start verification animation
+    setIsVerifyingFollow(true);
+
+    // After 2 seconds, enable the "I Followed" button
+    setTimeout(() => {
+      onFollowClick?.();
+      setIsVerifyingFollow(false);
+    }, 2000);
+  };
 
   return (
     <div className="border border-foreground/20 p-3 sm:p-4 space-y-2 sm:space-y-3">
@@ -97,7 +112,7 @@ export function SocialFollowCard({
             href={profileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => onFollowClick?.()}
+            onClick={handleFollowClick}
             className="px-3 py-2 text-sm text-center min-h-[40px] flex items-center justify-center border border-foreground/20 hover:bg-foreground/5 transition-colors"
           >
             Follow
@@ -107,14 +122,20 @@ export function SocialFollowCard({
           {isX && onConfirmFollow && (
             <button
               onClick={onConfirmFollow}
-              disabled={!hasClickedFollow}
+              disabled={!hasClickedFollow || isVerifyingFollow}
               className={`px-3 py-2 text-sm text-center min-h-[40px] flex items-center justify-center border border-foreground/20 transition-colors ${
-                hasClickedFollow
+                hasClickedFollow && !isVerifyingFollow
                   ? "hover:bg-foreground/5"
                   : "opacity-50 cursor-not-allowed"
               }`}
             >
-              I Followed
+              {isVerifyingFollow ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-pulse">Verifying...</span>
+                </span>
+              ) : (
+                "I Followed"
+              )}
             </button>
           )}
         </div>
