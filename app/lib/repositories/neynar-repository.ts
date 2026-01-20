@@ -252,27 +252,30 @@ export async function checkNeynarFollowStatus(
   }
 }
 
-/**
- * Fetches Farcaster usernames for multiple FIDs in bulk.
- *
- * Used to verify usernames before building share text with mentions.
- * Neynar is the authoritative source for Farcaster usernames.
- *
- * @param fids - Array of Farcaster user IDs
- * @returns Map of FID to username, or null on error
- */
-export async function fetchNeynarUsersByFids(
-  fids: number[]
-): Promise<Map<number, string> | null> {
-  if (fids.length === 0) {
-    return new Map();
-  }
+/** Best friend from Neynar API */
+export interface NeynarBestFriend {
+  fid: number;
+  username: string;
+  mutualAffinityScore: number;
+}
 
+/**
+ * Fetches best friends for a user from Neynar.
+ *
+ * Neynar Best Friends is the authoritative source for mutual connections.
+ * Usernames returned are verified and will render as clickable mentions.
+ *
+ * @param fid - Farcaster user ID
+ * @param limit - Number of friends to fetch (1-100, default 5)
+ * @returns Array of best friends or null on error
+ */
+export async function fetchNeynarBestFriends(
+  fid: number,
+  limit: number = 5
+): Promise<NeynarBestFriend[] | null> {
   try {
-    // Neynar bulk endpoint accepts comma-separated FIDs
-    const fidsParam = fids.join(",");
     const response = await fetch(
-      `${NEYNAR_API_BASE}/user/bulk?fids=${fidsParam}`,
+      `${NEYNAR_API_BASE}/user/best_friends?fid=${fid}&limit=${limit}`,
       {
         method: "GET",
         headers: {
@@ -286,29 +289,28 @@ export async function fetchNeynarUsersByFids(
 
     if (!response.ok) {
       console.error(
-        `[NeynarRepository] API error: ${response.status} ${response.statusText}`
+        `[NeynarRepository] Best friends API error: ${response.status} ${response.statusText}`
       );
       return null;
     }
 
     const data = await response.json();
 
-    // Response format: { users: [user1, user2, ...] }
-    const users: NeynarApiUser[] = data.users;
+    // Response format: { users: [{ fid, mutual_affinity_score, username }, ...] }
+    const users = data.users;
 
-    if (!users) {
-      return new Map();
+    if (!users || !Array.isArray(users)) {
+      return [];
     }
 
-    // Map FID to username
-    const fidToUsername = new Map<number, string>();
-    for (const user of users) {
-      fidToUsername.set(user.fid, user.username);
-    }
-
-    return fidToUsername;
+    // Map to our interface
+    return users.map((u: { fid: number; mutual_affinity_score: number; username: string }) => ({
+      fid: u.fid,
+      username: u.username,
+      mutualAffinityScore: u.mutual_affinity_score,
+    }));
   } catch (error) {
-    console.error("[NeynarRepository] Failed to fetch users by FIDs:", error);
+    console.error("[NeynarRepository] Failed to fetch best friends:", error);
     return null;
   }
 }

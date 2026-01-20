@@ -15,14 +15,11 @@ import { fetchEthosScore } from "@/app/lib/repositories/ethos-repository";
 import {
   fetchNeynarUserByAddress,
   fetchNeynarUserByFid,
-  fetchNeynarUsersByFids,
   checkNeynarFollowStatus,
   fetchCastByHash,
+  fetchNeynarBestFriends,
 } from "@/app/lib/repositories/neynar-repository";
-import {
-  fetchQuotientScore,
-  fetchQuotientMutuals,
-} from "@/app/lib/repositories/quotient-repository";
+import { fetchQuotientScore } from "@/app/lib/repositories/quotient-repository";
 import {
   isAllowlisted,
   addAddressToAllowlist,
@@ -454,20 +451,18 @@ export async function addToAllowlistIfEligible(
 // ============================================================================
 
 /**
- * Builds share text with top 5 mutual mentions.
+ * Builds share text with top 5 best friend mentions.
+ *
+ * Uses Neynar Best Friends API - the authoritative source for:
+ * - Mutual connections (based on affinity score)
+ * - Verified usernames (guaranteed to render as clickable mentions)
  *
  * Business rules:
- * 1. Sort mutuals by combinedScore descending
- * 2. Take top 5
- * 3. Verify usernames via Neynar (authoritative source)
- * 4. Format as @username mentions (only verified usernames)
- * 5. Append to base text from config
- * 6. Graceful fallback: returns base text if no mutuals
- *
- * Why Neynar verification is required:
- * - Quotient usernames may not match exact Farcaster usernames
- * - Farcaster miniapps require exact username matches for clickable mentions
- * - Neynar is the authoritative source for FID -> username resolution
+ * 1. Fetch best friends from Neynar (already sorted by affinity)
+ * 2. Take top 5 (limit param)
+ * 3. Format as @username mentions
+ * 4. Append to base text from config
+ * 5. Graceful fallback: returns base text if no best friends
  *
  * @param fid - Farcaster user ID
  * @returns Share text result with mentions
@@ -478,11 +473,12 @@ export async function buildShareTextWithMutuals(
   const baseText = ELIGIBILITY_CONFIG.share.text;
 
   try {
-    // 1. Fetch mutuals from Quotient (repository call)
-    const mutuals = await fetchQuotientMutuals(fid);
+    // Fetch best friends from Neynar (authoritative source)
+    // API returns users sorted by mutual_affinity_score descending
+    const bestFriends = await fetchNeynarBestFriends(fid, 5);
 
-    // Graceful fallback if no mutuals or error
-    if (!mutuals || mutuals.length === 0) {
+    // Graceful fallback if no best friends or error
+    if (!bestFriends || bestFriends.length === 0) {
       return {
         text: baseText,
         mentions: [],
@@ -490,31 +486,10 @@ export async function buildShareTextWithMutuals(
       };
     }
 
-    // 2. Business rule: Sort by combinedScore descending, take top 5
-    const topMutuals = [...mutuals]
-      .sort((a, b) => b.combinedScore - a.combinedScore)
-      .slice(0, 5);
+    // Extract usernames (already verified by Neynar)
+    const mentions = bestFriends.map((f) => f.username.trim());
 
-    // 3. Verify usernames via Neynar (repository call)
-    const fids = topMutuals.map((m) => m.fid);
-    const fidToUsername = await fetchNeynarUsersByFids(fids);
-
-    // 4. Business rule: Only use verified usernames from Neynar
-    // This ensures mentions are clickable in Farcaster miniapps
-    const mentions = fids
-      .map((mutualFid) => fidToUsername?.get(mutualFid))
-      .filter((u): u is string => Boolean(u));
-
-    // Graceful fallback if no verified usernames
-    if (mentions.length === 0) {
-      return {
-        text: baseText,
-        mentions: [],
-        hasMutuals: false,
-      };
-    }
-
-    // 5. Format mentions text
+    // Format mentions text
     const mentionsText = mentions.map((u) => `@${u}`).join(" ");
 
     // Combine base text with mentions

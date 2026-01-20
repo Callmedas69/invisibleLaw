@@ -41,7 +41,9 @@
       "Bash(popd:*)",
       "Bash(node:*)",
       "Bash(npm run lint:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "WebFetch(domain:dev.neynar.com)",
+      "WebFetch(domain:docs.neynar.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
