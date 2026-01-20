@@ -10,6 +10,7 @@ export const ELIGIBILITY_CONFIG = {
   thresholds: {
     ethos: 1300,     // Ethos score range: 0-2800
     neynar: 0.7,     // Neynar score range: 0-1
+    quotient: 0.7,   // Quotient score range: 0-1 (Influential tier)
   },
 
   /** Social follow requirements - need BOTH to pass */
@@ -26,7 +27,7 @@ export const ELIGIBILITY_CONFIG = {
 
   /** Share requirement - must share miniapp on Farcaster */
   share: {
-    text: "Check your eligibility for Invisible Law allowlist!",
+    text: "See if you’re eligible for the allowlist.",
     embeds: ["https://invisiblelaw.geoart.studio/eligibility"],
   },
 } as const;

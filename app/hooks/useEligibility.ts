@@ -149,8 +149,24 @@ export function useEligibility(): UseEligibilityData {
 
   // Share miniapp on Farcaster
   const shareCast = useCallback(async () => {
+    let shareText = ELIGIBILITY_CONFIG.share.text;
+
+    // If FID is available, try to fetch dynamic text with mutuals
+    if (fid) {
+      try {
+        const response = await fetch(`/api/share/text?fid=${fid}`);
+        if (response.ok) {
+          const data = await response.json();
+          shareText = data.text;
+        }
+      } catch {
+        // Graceful fallback to static text
+        console.warn("[useEligibility] Failed to fetch share text with mutuals");
+      }
+    }
+
     const hash = await composeCast({
-      text: ELIGIBILITY_CONFIG.share.text,
+      text: shareText,
       embeds: ELIGIBILITY_CONFIG.share.embeds as [string],
     });
     if (hash && address) {
@@ -158,7 +174,7 @@ export function useEligibility(): UseEligibilityData {
       setShareHash(hash);
       // Refetch will happen automatically via useEffect dependency on shareHash
     }
-  }, [composeCast, address]);
+  }, [composeCast, address, fid]);
 
   // Add to allowlist
   const addToAllowlist = useCallback(async (): Promise<boolean> => {

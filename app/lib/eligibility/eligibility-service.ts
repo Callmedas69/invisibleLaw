@@ -19,6 +19,10 @@ import {
   fetchCastByHash,
 } from "@/app/lib/repositories/neynar-repository";
 import {
+  fetchQuotientScore,
+  fetchQuotientMutuals,
+} from "@/app/lib/repositories/quotient-repository";
+import {
   isAllowlisted,
   addAddressToAllowlist,
 } from "@/app/lib/allowlist-service";
@@ -29,7 +33,7 @@ import {
 
 /** Individual score check result */
 export interface ScoreCheckResult {
-  provider: "ethos" | "neynar";
+  provider: "ethos" | "neynar" | "quotient";
   score: number | null;
   threshold: number;
   passes: boolean;
@@ -98,6 +102,16 @@ export interface AddToAllowlistResult {
   alreadyAllowlisted: boolean;
 }
 
+/** Result of building share text with mutuals */
+export interface ShareTextResult {
+  /** Full share text including mentions */
+  text: string;
+  /** Array of mentioned usernames (without @) */
+  mentions: string[];
+  /** Whether mutuals were included */
+  hasMutuals: boolean;
+}
+
 // ============================================================================
 // Business Rules (Threshold Evaluation)
 // ============================================================================
@@ -118,6 +132,15 @@ function evaluateEthosScore(score: number | null): boolean {
 function evaluateNeynarScore(score: number | null): boolean {
   if (score === null) return false;
   return score >= ELIGIBILITY_CONFIG.thresholds.neynar;
+}
+
+/**
+ * Evaluates if a Quotient score passes the threshold.
+ * Business rule: score >= 0.7
+ */
+function evaluateQuotientScore(score: number | null): boolean {
+  if (score === null) return false;
+  return score >= ELIGIBILITY_CONFIG.thresholds.quotient;
 }
 
 // ============================================================================
@@ -207,6 +230,19 @@ export async function checkEligibility(
     });
 
     // -------------------------------------------------------------------------
+    // Step 2b: Fetch Quotient score (requires FID)
+    // -------------------------------------------------------------------------
+    const quotientResult = await fetchQuotientScore(neynarUser.fid);
+    const quotientScore = quotientResult?.score ?? null;
+    scores.push({
+      provider: "quotient",
+      score: quotientScore,
+      threshold: ELIGIBILITY_CONFIG.thresholds.quotient,
+      passes: evaluateQuotientScore(quotientScore),
+      error: quotientResult === null ? "Could not fetch Quotient score" : null,
+    });
+
+    // -------------------------------------------------------------------------
     // Step 3: Check Farcaster follow status (requires FID)
     // -------------------------------------------------------------------------
     const targetFid = ELIGIBILITY_CONFIG.social.farcaster.fid;
@@ -236,11 +272,19 @@ export async function checkEligibility(
       error: fcError,
     });
   } else {
-    // No Farcaster account - add placeholder score
+    // No Farcaster account - add placeholder scores
     scores.push({
       provider: "neynar",
       score: null,
       threshold: ELIGIBILITY_CONFIG.thresholds.neynar,
+      passes: false,
+      error: "No Farcaster account linked to this wallet",
+    });
+
+    scores.push({
+      provider: "quotient",
+      score: null,
+      threshold: ELIGIBILITY_CONFIG.thresholds.quotient,
       passes: false,
       error: "No Farcaster account linked to this wallet",
     });
@@ -400,6 +444,72 @@ export async function addToAllowlistIfEligible(
       error: "Failed to add address to allowlist",
       alreadyAllowlisted: false,
       fid: resolvedFid,
+    };
+  }
+}
+
+// ============================================================================
+// Share Text Builder
+// ============================================================================
+
+/**
+ * Builds share text with top 5 mutual mentions.
+ *
+ * Business rules:
+ * 1. Sort mutuals by combinedScore descending
+ * 2. Take top 5
+ * 3. Format as @username mentions
+ * 4. Append to base text from config
+ * 5. Graceful fallback: returns base text if no mutuals
+ *
+ * @param fid - Farcaster user ID
+ * @returns Share text result with mentions
+ */
+export async function buildShareTextWithMutuals(
+  fid: number
+): Promise<ShareTextResult> {
+  const baseText = ELIGIBILITY_CONFIG.share.text;
+
+  try {
+    // Fetch mutuals from repository
+    const mutuals = await fetchQuotientMutuals(fid);
+
+    // Graceful fallback if no mutuals or error
+    if (!mutuals || mutuals.length === 0) {
+      return {
+        text: baseText,
+        mentions: [],
+        hasMutuals: false,
+      };
+    }
+
+    // Business rule: Sort by combinedScore descending, take top 5
+    const topMutuals = [...mutuals]
+      .sort((a, b) => b.combinedScore - a.combinedScore)
+      .slice(0, 5);
+
+    // Format mentions
+    const mentions = topMutuals.map((m) => m.username);
+    const mentionsText = mentions.map((u) => `@${u}`).join(" ");
+
+    // Combine base text with mentions
+    const text = `${baseText}\n\n${mentionsText}`;
+
+    return {
+      text,
+      mentions,
+      hasMutuals: true,
+    };
+  } catch (error) {
+    console.error(
+      "[EligibilityService] Failed to build share text with mutuals:",
+      error
+    );
+    // Graceful fallback
+    return {
+      text: baseText,
+      mentions: [],
+      hasMutuals: false,
     };
   }
 }

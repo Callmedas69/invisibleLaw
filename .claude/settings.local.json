@@ -35,7 +35,11 @@
       "Bash(ping:*)",
       "Bash(curl:*)",
       "Bash(powershell -Command \"Start-Sleep -Seconds 3; try { $r = Invoke-WebRequest -Uri ''http://localhost:3000'' -UseBasicParsing -TimeoutSec 5; Write-Host ''Status:'' $r.StatusCode } catch { Write-Host ''Server not responding yet or error:'' $_Exception.Message }\")",
-      "Bash(npm version)"
+      "Bash(npm version)",
+      "Bash(bash -c 'cd \"\"D:/Harry/BasedNouns/CodeProject/invisiblelaw\"\" && npm run build 2>&1')",
+      "Bash(pushd:*)",
+      "Bash(popd:*)",
+      "Bash(node:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

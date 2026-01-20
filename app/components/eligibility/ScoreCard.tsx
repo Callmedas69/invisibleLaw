@@ -1,7 +1,7 @@
 "use client";
 
 interface ScoreCardProps {
-  provider: "ethos" | "neynar";
+  provider: "ethos" | "neynar" | "quotient";
   score: number | null;
   threshold: number;
   passes: boolean;
@@ -20,6 +20,13 @@ const PROVIDER_INFO = {
   neynar: {
     name: "Neynar",
     description: "Farcaster social score",
+    maxScore: 1,
+    format: (score: number) => score.toFixed(2),
+    formatThreshold: (threshold: number) => threshold.toFixed(2),
+  },
+  quotient: {
+    name: "Quotient",
+    description: "Farcaster reputation score",
     maxScore: 1,
     format: (score: number) => score.toFixed(2),
     formatThreshold: (threshold: number) => threshold.toFixed(2),
