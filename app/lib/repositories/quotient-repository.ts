@@ -132,7 +132,7 @@ export async function fetchQuotientMutuals(
 ): Promise<QuotientMutual[] | null> {
   try {
     const response = await fetch(
-      `${QUOTIENT_API_BASE}/v1/farcaster-connections`,
+      `${QUOTIENT_API_BASE}/v1/farcaster-connections-all`,
       {
         method: "POST",
         headers: {
@@ -141,7 +141,6 @@ export async function fetchQuotientMutuals(
         body: JSON.stringify({
           fid,
           api_key: getQuotientApiKey(),
-          categories: "mutuals",
         }),
         // Cache for 5 minutes
         next: { revalidate: 300 },
@@ -152,8 +151,17 @@ export async function fetchQuotientMutuals(
       if (response.status === 404) {
         return null;
       }
+      // Log error details for debugging
+      let errorBody = "";
+      try {
+        errorBody = await response.text();
+      } catch {
+        errorBody = "(could not read response body)";
+      }
       console.error(
-        `[QuotientRepository] Connections API error: ${response.status} ${response.statusText}`
+        `[QuotientRepository] Connections API error: ${response.status} ${response.statusText}`,
+        `\nRequest: fid=${fid}`,
+        `\nResponse: ${errorBody}`
       );
       return null;
     }
