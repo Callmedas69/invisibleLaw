@@ -83,7 +83,7 @@ export function useContractReads(): ContractData {
   const { data: userMintedData, refetch: refetchUser } = useReadContract({
     address: contractAddress,
     abi: contractABI,
-    functionName: "numberMinted",
+    functionName: "balanceOf",
     args: address ? [address] : undefined,
     query: {
       enabled: isConnected && !!address,

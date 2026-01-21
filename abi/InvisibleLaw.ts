@@ -1,10 +1,13 @@
-// Base Mainnet (Chain ID: 8453)
-export const INVISIBLE_LAW_ADDRESS = "0x5De2AD02bF64f9d8D74b9CB321A615d85c8a4019" as const;
+// Base Mainnet (Chain ID: 8453) - Production
+export const INVISIBLE_LAW_ADDRESS = "0x6fd8b3aea6629e48370481777888c719008305e7" as const;
 
 export const INVISIBLE_LAW_ABI = [
   {
     type: "constructor",
-    inputs: [],
+    inputs: [
+      { name: "_treasury", type: "address", internalType: "address" },
+      { name: "_renderer", type: "address", internalType: "address" },
+    ],
     stateMutability: "nonpayable",
   },
   {
@@ -127,23 +130,6 @@ export const INVISIBLE_LAW_ABI = [
   },
   {
     type: "function",
-    name: "getTokenSeed",
-    inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
-    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "getTokenTraits",
-    inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
-    outputs: [
-      { name: "rarity", type: "string", internalType: "string" },
-      { name: "seed", type: "uint256", internalType: "uint256" },
-    ],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
     name: "hasClaimedAllowlist",
     inputs: [{ name: "account", type: "address", internalType: "address" }],
     outputs: [{ name: "", type: "bool", internalType: "bool" }],
@@ -171,7 +157,7 @@ export const INVISIBLE_LAW_ABI = [
     name: "mint",
     inputs: [
       { name: "quantity", type: "uint256", internalType: "uint256" },
-      { name: "proof", type: "bytes32[]", internalType: "bytes32[]" },
+      { name: "merkleProof", type: "bytes32[]", internalType: "bytes32[]" },
     ],
     outputs: [],
     stateMutability: "payable",
@@ -195,13 +181,6 @@ export const INVISIBLE_LAW_ABI = [
     name: "name",
     inputs: [],
     outputs: [{ name: "", type: "string", internalType: "string" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "numberMinted",
-    inputs: [{ name: "owner_", type: "address", internalType: "address" }],
-    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
   },
   {
@@ -237,6 +216,13 @@ export const INVISIBLE_LAW_ABI = [
     name: "paused",
     inputs: [],
     outputs: [{ name: "", type: "bool", internalType: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "renderer",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "contract InvisibleLawRenderer" }],
     stateMutability: "view",
   },
   {
@@ -285,7 +271,7 @@ export const INVISIBLE_LAW_ABI = [
   {
     type: "function",
     name: "setAllowlistFreeMint",
-    inputs: [{ name: "amount", type: "uint256", internalType: "uint256" }],
+    inputs: [{ name: "_amount", type: "uint256", internalType: "uint256" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -309,7 +295,7 @@ export const INVISIBLE_LAW_ABI = [
   {
     type: "function",
     name: "setMerkleRoot",
-    inputs: [{ name: "newRoot", type: "bytes32", internalType: "bytes32" }],
+    inputs: [{ name: "_merkleRoot", type: "bytes32", internalType: "bytes32" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -323,7 +309,14 @@ export const INVISIBLE_LAW_ABI = [
   {
     type: "function",
     name: "setMintPrice",
-    inputs: [{ name: "newPrice", type: "uint256", internalType: "uint256" }],
+    inputs: [{ name: "_price", type: "uint256", internalType: "uint256" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "setRenderer",
+    inputs: [{ name: "_renderer", type: "address", internalType: "address" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -340,7 +333,7 @@ export const INVISIBLE_LAW_ABI = [
   {
     type: "function",
     name: "setTreasury",
-    inputs: [{ name: "newTreasury", type: "address", internalType: "address" }],
+    inputs: [{ name: "_treasury", type: "address", internalType: "address" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -523,10 +516,28 @@ export const INVISIBLE_LAW_ABI = [
   },
   {
     type: "event",
+    name: "RendererUpdated",
+    inputs: [
+      { name: "oldRenderer", type: "address", indexed: false, internalType: "address" },
+      { name: "newRenderer", type: "address", indexed: false, internalType: "address" },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
     name: "RoyaltyUpdated",
     inputs: [
       { name: "receiver", type: "address", indexed: false, internalType: "address" },
       { name: "feeNumerator", type: "uint96", indexed: false, internalType: "uint96" },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "SeedGenerated",
+    inputs: [
+      { name: "tokenId", type: "uint256", indexed: true, internalType: "uint256" },
+      { name: "seed", type: "uint256", indexed: false, internalType: "uint256" },
     ],
     anonymous: false,
   },
@@ -613,6 +624,7 @@ export const INVISIBLE_LAW_ABI = [
   { type: "error", name: "OwnerQueryForNonexistentToken", inputs: [] },
   { type: "error", name: "OwnershipNotInitializedForExtraData", inputs: [] },
   { type: "error", name: "RoyaltyTooHigh", inputs: [] },
+  { type: "error", name: "SeedNotGenerated", inputs: [] },
   { type: "error", name: "SequentialMintExceedsLimit", inputs: [] },
   { type: "error", name: "SequentialUpToTooSmall", inputs: [] },
   { type: "error", name: "SpotMintTokenIdTooSmall", inputs: [] },
